@@ -8,3 +8,4 @@ coverage/
 !.env.example
 
 public/assets/aistudio/
+PUSH_TO_GITHUB.bat
