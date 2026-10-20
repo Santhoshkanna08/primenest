@@ -1,0 +1,6 @@
+{
+  "name": "PrimeNest Properties",
+  "description": "PrimeNest Properties — Premium residential plots, luxury villas, architectural estates, and land investments.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
