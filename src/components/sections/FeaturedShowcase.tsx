@@ -57,7 +57,7 @@ export const FeaturedShowcase: React.FC<FeaturedShowcaseProps> = ({
           {/* Marquee Large Property Card (col-span-7) */}
           <div
             onClick={() => onSelectProperty(marquee)}
-            className="lg:col-span-7 group cursor-pointer bg-white rounded-lg overflow-hidden border border-[#E7DCC7]/50 shadow-sm hover:shadow-2xl hover:border-[#B69A70] transition-all duration-300 flex flex-col justify-between"
+            className="lg:col-span-7 group cursor-pointer bg-white rounded-lg overflow-hidden border border-[#E7DCC7]/50 shadow-sm hover:shadow-2xl hover:border-[#B69A70] transition-all duration-300 flex flex-col"
           >
             <div className="relative aspect-[16/10] overflow-hidden bg-[#202B25]">
               <ResilientImage
@@ -65,7 +65,7 @@ export const FeaturedShowcase: React.FC<FeaturedShowcaseProps> = ({
                 alt={marquee.title}
                 className="group-hover:scale-105 transition-transform duration-700 ease-out"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
 
               <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
                 <span className="text-xs font-mono tracking-widest text-white uppercase bg-[#172720]/80 backdrop-blur-md px-3 py-1 rounded">
@@ -91,21 +91,87 @@ export const FeaturedShowcase: React.FC<FeaturedShowcaseProps> = ({
               </div>
             </div>
 
-            <div className="p-6 sm:p-8 flex flex-col justify-between flex-grow bg-white">
+            <div className="p-6 sm:p-8 flex flex-col flex-grow bg-white">
+              {/* Header Info */}
               <div>
                 <div className="flex items-center gap-1.5 text-xs text-[#777B75] mb-2">
                   <MapPin className="w-3.5 h-3.5 text-[#B69A70]" />
                   <span>{marquee.location.city}, {marquee.location.state}</span>
                 </div>
-                <h3 className="text-2xl font-serif text-[#172720] group-hover:text-[#B69A70] transition-colors mb-3">
+                <h3 className="text-2xl sm:text-3xl font-serif text-[#172720] group-hover:text-[#B69A70] transition-colors mb-2">
                   {marquee.title}
                 </h3>
-                <p className="text-sm text-[#777B75] leading-relaxed mb-6">
+                <p className="text-sm text-[#777B75] leading-relaxed">
                   {marquee.description}
                 </p>
               </div>
 
-              <div className="pt-4 border-t border-[#E7DCC7]/40 flex flex-wrap items-center justify-between gap-4">
+              {/* Architectural Distinction Highlight */}
+              {marquee.editorialHighlight && (
+                <div className="my-5 p-4 rounded-lg bg-[#F7F5EF] border border-[#B69A70]/30 flex items-start gap-3">
+                  <Sparkles className="w-4 h-4 text-[#B69A70] shrink-0 mt-0.5" />
+                  <div>
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-[#B69A70] font-semibold block mb-0.5">
+                      Architectural Distinction
+                    </span>
+                    <p className="text-xs sm:text-sm font-serif italic text-[#172720] leading-relaxed">
+                      "{marquee.editorialHighlight}"
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Curated Key Appointments */}
+              {marquee.amenities && marquee.amenities.length > 0 && (
+                <div className="mb-5">
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-[#777B75] font-semibold block mb-2.5">
+                    Signature Appointments
+                  </span>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {marquee.amenities.slice(0, 3).map((amenity, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center gap-2 text-xs text-[#202B25] bg-[#F7F5EF] border border-[#E7DCC7]/60 px-3 py-2 rounded"
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#B69A70] shrink-0" />
+                        <span className="truncate font-medium">{amenity}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Multi-Perspective Gallery Thumbnails */}
+              {marquee.images && marquee.images.length > 1 && (
+                <div className="mb-5 pt-3 border-t border-[#E7DCC7]/40 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-[#777B75] shrink-0">
+                      Gallery Perspectives
+                    </span>
+                    <div className="flex items-center gap-2">
+                      {marquee.images.slice(1, 3).map((img, i) => (
+                        <div
+                          key={i}
+                          className="w-16 h-11 rounded border border-[#E7DCC7] overflow-hidden shrink-0 relative"
+                        >
+                          <ResilientImage
+                            src={img.url}
+                            alt={img.caption || 'Villa view'}
+                            className="w-full h-full object-cover"
+                            containerClassName="h-full"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <span className="text-xs font-mono text-[#B69A70] shrink-0 font-medium">
+                    +{marquee.images.length} Curated Photos
+                  </span>
+                </div>
+              )}
+
+              {/* Footer Specs & CTA */}
+              <div className="mt-auto pt-4 border-t border-[#E7DCC7]/40 flex flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center gap-4 text-xs font-mono text-[#777B75]">
                   <span className="flex items-center gap-1.5">
                     <Bed className="w-4 h-4 text-[#B69A70]" />
