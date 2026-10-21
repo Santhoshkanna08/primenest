@@ -99,8 +99,8 @@ export const PropertiesPage: React.FC<PropertiesPageProps> = ({
     sortBy !== 'featured';
 
   return (
-    <div className="pt-28 pb-24 bg-[#F7F5EF] min-h-screen text-[#202B25]">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8">
+    <div className="pt-24 sm:pt-28 pb-24 bg-[#F7F5EF] min-h-screen text-[#202B25]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="mb-10 max-w-3xl">
           <div className="inline-flex items-center gap-2 mb-2 text-[#B69A70]">

@@ -28,10 +28,10 @@ export const PlotsPage: React.FC<PlotsPageProps> = ({
   const [activeMediaTab, setActiveMediaTab] = React.useState<'aerial' | 'video'>('video');
 
   return (
-    <div className="pt-28 pb-24 bg-[#F7F5EF] min-h-screen text-[#202B25]">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8">
+    <div className="pt-24 sm:pt-28 pb-24 bg-[#F7F5EF] min-h-screen text-[#202B25]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Editorial Land Header */}
-        <div className="mb-14 max-w-3xl">
+        <div className="mb-10 sm:mb-14 max-w-3xl">
           <div className="inline-flex items-center gap-2 mb-2 text-[#B69A70]">
             <Compass className="w-3.5 h-3.5" />
             <span className="text-xs uppercase tracking-[0.25em] font-mono font-semibold">
@@ -50,9 +50,16 @@ export const PlotsPage: React.FC<PlotsPageProps> = ({
         {flagshipPlot && (
           <div className="mb-16 bg-[#172720] text-white rounded-2xl overflow-hidden border border-[#B69A70]/30 shadow-2xl">
             <div className="grid grid-cols-1 lg:grid-cols-12 items-center">
-              <div className="lg:col-span-7 relative aspect-[16/10] overflow-hidden bg-[#172720] flex items-center justify-center">
+              <div className="lg:col-span-7 relative aspect-[16/10] sm:aspect-[16/9] lg:aspect-[16/10] overflow-hidden bg-[#172720] flex items-center justify-center">
                 {activeMediaTab === 'video' ? (
-                  <div className="w-full h-full relative flex items-center justify-center bg-black/40">
+                  <div className="w-full h-full relative flex items-center justify-center overflow-hidden bg-black/60">
+                    {/* Ambient cinematic backdrop */}
+                    <img
+                      src="/assets/videos/residential-plots-poster.jpg"
+                      alt=""
+                      aria-hidden="true"
+                      className="absolute inset-0 w-full h-full object-cover filter blur-xl opacity-35 scale-110 pointer-events-none"
+                    />
                     <video
                       src="/assets/videos/residential-plots-development.mp4"
                       poster="/assets/videos/residential-plots-poster.jpg"
@@ -60,7 +67,7 @@ export const PlotsPage: React.FC<PlotsPageProps> = ({
                       muted
                       loop
                       playsInline
-                      className="max-h-full max-w-full object-contain"
+                      className="relative z-10 max-h-[96%] aspect-[9/16] object-cover rounded-md shadow-2xl border border-[#B69A70]/40"
                     />
                   </div>
                 ) : (

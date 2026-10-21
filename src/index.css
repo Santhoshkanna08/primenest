@@ -17,10 +17,27 @@
 @layer base {
   html {
     font-family: var(--font-sans);
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+    position: relative;
   }
 
   h1, h2, h3, .font-serif {
     font-family: var(--font-serif);
+  }
+
+  img, video {
+    max-width: 100%;
   }
 }
 
@@ -38,4 +55,13 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #B69A70;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

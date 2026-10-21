@@ -31,16 +31,16 @@ export const propertiesData: Property[] = [
     editorialHighlight: 'Featured in Architectural Digest as one of the year’s most harmonious coastal modern residences.',
     images: [
       {
-        url: '/src/assets/images/hero_luxury_villa_exterior_1792478313210.jpg',
+        url: '/assets/images/hero_luxury_villa_exterior_1792478313210.jpg',
         caption: 'Twilight elevation showcasing the reflection pool and cantilevered cedar terrace',
         isCover: true
       },
       {
-        url: '/src/assets/images/featured_villa_estate_1792478314692.jpg',
+        url: '/assets/images/featured_villa_estate_1792478314692.jpg',
         caption: 'Daylight terrace with travertine stone flooring and cypress promenade'
       },
       {
-        url: '/src/assets/images/luxury_modern_penthouse_1792478315544.jpg',
+        url: '/assets/images/luxury_modern_penthouse_1792478315544.jpg',
         caption: 'Double-height great room with bespoke marble fireplace and sculpture collection'
       }
     ],
@@ -94,12 +94,12 @@ export const propertiesData: Property[] = [
     editorialHighlight: 'Designed around low-impact ecological contours with dedicated rainwater conservation channels.',
     images: [
       {
-        url: '/src/assets/images/residential_plots_aerial_1792478314103.jpg',
+        url: '/assets/images/residential_plots_aerial_1792478314103.jpg',
         caption: 'Aerial master view of the contoured parcels and central landscaped median',
         isCover: true
       },
       {
-        url: '/src/assets/images/coastal_land_estate_1792478315558.jpg',
+        url: '/assets/images/coastal_land_estate_1792478315558.jpg',
         caption: 'Topographical view towards the valley corridor'
       }
     ],
@@ -153,16 +153,16 @@ export const propertiesData: Property[] = [
     editorialHighlight: 'A benchmark in architectural quiet luxury with discreet zero-sill threshold transitions.',
     images: [
       {
-        url: '/src/assets/images/featured_villa_estate_1792478314692.jpg',
+        url: '/assets/images/featured_villa_estate_1792478314692.jpg',
         caption: 'Travertine lounge terrace and lap pool aligned with Italian cypress trees',
         isCover: true
       },
       {
-        url: '/src/assets/images/luxury_modern_penthouse_1792478315544.jpg',
+        url: '/assets/images/luxury_modern_penthouse_1792478315544.jpg',
         caption: 'Light-filled living room featuring floor-to-ceiling iron-framed glass'
       },
       {
-        url: '/src/assets/images/hero_luxury_villa_exterior_1792478313210.jpg',
+        url: '/assets/images/hero_luxury_villa_exterior_1792478313210.jpg',
         caption: 'South-facing twilight view of the cantilevered pavilion'
       }
     ],
@@ -215,12 +215,12 @@ export const propertiesData: Property[] = [
     editorialHighlight: 'Custom lighting installation by Studio Bocci with museum-grade art illumination throughout.',
     images: [
       {
-        url: '/src/assets/images/luxury_modern_penthouse_1792478315544.jpg',
+        url: '/assets/images/luxury_modern_penthouse_1792478315544.jpg',
         caption: 'Double-height grand salon featuring bookmatched marble hearth and bespoke furniture',
         isCover: true
       },
       {
-        url: '/src/assets/images/hero_luxury_villa_exterior_1792478313210.jpg',
+        url: '/assets/images/hero_luxury_villa_exterior_1792478313210.jpg',
         caption: 'Skyline sunset perspective from the wraparound observation deck'
       }
     ],
@@ -274,12 +274,12 @@ export const propertiesData: Property[] = [
     editorialHighlight: 'One of only three remaining buildable oceanfront private parcels in this protected sector.',
     images: [
       {
-        url: '/src/assets/images/coastal_land_estate_1792478315558.jpg',
+        url: '/assets/images/coastal_land_estate_1792478315558.jpg',
         caption: 'Aerial headland view showing boundary line and natural stone terrace pathway',
         isCover: true
       },
       {
-        url: '/src/assets/images/residential_plots_aerial_1792478314103.jpg',
+        url: '/assets/images/residential_plots_aerial_1792478314103.jpg',
         caption: 'Enclave approach road and protected natural buffer'
       }
     ],
@@ -332,12 +332,12 @@ export const propertiesData: Property[] = [
     editorialHighlight: 'Low density layout with 40% reserved open meadow space ensuring continuous tranquility.',
     images: [
       {
-        url: '/src/assets/images/residential_plots_aerial_1792478314103.jpg',
+        url: '/assets/images/residential_plots_aerial_1792478314103.jpg',
         caption: 'Golden hour drone perspective over the tree-framed estate parcels',
         isCover: true
       },
       {
-        url: '/src/assets/images/featured_villa_estate_1792478314692.jpg',
+        url: '/assets/images/featured_villa_estate_1792478314692.jpg',
         caption: 'Architectural inspiration for home construction on the plots'
       }
     ],
@@ -388,12 +388,12 @@ export const propertiesData: Property[] = [
     editorialHighlight: 'Exemplary natural lighting design that shifts throughout the day into warm golden serenity.',
     images: [
       {
-        url: '/src/assets/images/featured_villa_estate_1792478314692.jpg',
+        url: '/assets/images/featured_villa_estate_1792478314692.jpg',
         caption: 'Courtyard connection and floor-to-ceiling glass architecture',
         isCover: true
       },
       {
-        url: '/src/assets/images/luxury_modern_penthouse_1792478315544.jpg',
+        url: '/assets/images/luxury_modern_penthouse_1792478315544.jpg',
         caption: 'Minimalist interior gallery living space'
       }
     ],

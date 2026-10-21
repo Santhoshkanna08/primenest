@@ -214,8 +214,8 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
       aria-label="PrimeNest Assistant Chat Panel"
       className={`fixed z-50 transition-all duration-300 shadow-2xl ${
         isMinimized
-          ? 'bottom-6 right-6 w-72 h-14 bg-[#172720] rounded-xl border border-[#B69A70]/40 overflow-hidden'
-          : 'bottom-4 right-4 sm:bottom-6 sm:right-6 w-[calc(100vw-2rem)] sm:w-[420px] h-[580px] max-h-[85vh] bg-[#F7F5EF] rounded-2xl border border-[#E7DCC7] flex flex-col overflow-hidden'
+          ? 'bottom-4 right-3 sm:bottom-6 sm:right-6 w-[min(280px,calc(100vw-1.5rem))] h-14 bg-[#172720] rounded-xl border border-[#B69A70]/40 overflow-hidden'
+          : 'inset-x-2 bottom-2 sm:inset-auto sm:bottom-6 sm:right-6 w-auto sm:w-[420px] h-[min(620px,calc(100dvh-1rem))] sm:h-[580px] bg-[#F7F5EF] rounded-2xl border border-[#E7DCC7] flex flex-col overflow-hidden'
       }`}
     >
       {/* Minimized Bar */}
@@ -431,7 +431,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
               e.preventDefault();
               handleSendMessage(inputValue);
             }}
-            className="p-3 bg-white border-t border-[#E7DCC7] flex items-center gap-2"
+            className="p-2.5 sm:p-3 bg-white border-t border-[#E7DCC7] flex items-center gap-2 shrink-0"
           >
             <input
               ref={inputRef}
@@ -440,14 +440,14 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               disabled={isTyping}
-              className="flex-grow px-3 py-2 text-xs bg-[#F7F5EF] border border-[#E7DCC7] rounded-lg focus:outline-none focus:border-[#B69A70] text-[#172720] disabled:opacity-70"
+              className="flex-grow min-w-0 px-3 py-2 text-xs bg-[#F7F5EF] border border-[#E7DCC7] rounded-lg focus:outline-none focus:border-[#B69A70] text-[#172720] disabled:opacity-70"
             />
 
             <button
               type="submit"
               disabled={!inputValue.trim() || isTyping}
               aria-label="Send message"
-              className="p-2.5 bg-[#172720] hover:bg-[#B69A70] text-white hover:text-[#172720] rounded-lg transition-colors disabled:opacity-40 disabled:hover:bg-[#172720] disabled:hover:text-white cursor-pointer disabled:cursor-not-allowed"
+              className="p-2.5 bg-[#172720] hover:bg-[#B69A70] text-white hover:text-[#172720] rounded-lg transition-colors disabled:opacity-40 disabled:hover:bg-[#172720] disabled:hover:text-white cursor-pointer disabled:cursor-not-allowed shrink-0"
             >
               <Send className="w-3.5 h-3.5" />
             </button>

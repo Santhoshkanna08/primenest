@@ -110,8 +110,8 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
         </div>
 
         {/* Specifications Strip & View CTA */}
-        <div className="pt-3 border-t border-[#E7DCC7]/40 flex items-center justify-between text-xs text-[#202B25]">
-          <div className="flex items-center gap-3 font-mono text-[11px] text-[#777B75]">
+        <div className="pt-3 border-t border-[#E7DCC7]/40 flex flex-wrap items-center justify-between gap-2 text-xs text-[#202B25]">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 font-mono text-[10px] sm:text-[11px] text-[#777B75]">
             {property.specs.bedrooms && (
               <span className="flex items-center gap-1" title="Bedrooms">
                 <Bed className="w-3.5 h-3.5 text-[#B69A70]" />

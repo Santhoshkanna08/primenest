@@ -45,16 +45,16 @@ export const SiteVisitModal: React.FC<SiteVisitModalProps> = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby="site-visit-title"
-      className="fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-md flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4"
     >
-      <div className="bg-[#F7F5EF] text-[#202B25] w-full max-w-lg rounded-xl shadow-2xl overflow-hidden border border-[#E7DCC7]">
+      <div className="bg-[#F7F5EF] text-[#202B25] w-full max-w-lg rounded-xl shadow-2xl overflow-hidden border border-[#E7DCC7] my-4">
         {/* Header */}
-        <div className="bg-[#172720] text-white p-6 flex items-center justify-between border-b border-[#E7DCC7]/20">
+        <div className="bg-[#172720] text-white p-4 sm:p-6 flex items-center justify-between border-b border-[#E7DCC7]/20">
           <div>
             <span className="text-[10px] uppercase font-mono tracking-widest text-[#B69A70] block">
               SCHEDULE PRIVATE SITE VISIT
             </span>
-            <h2 id="site-visit-title" className="text-xl font-serif text-white">
+            <h2 id="site-visit-title" className="text-lg sm:text-xl font-serif text-white">
               {property.title}
             </h2>
             <div className="flex items-center gap-1.5 text-xs text-[#E7DCC7]/70 mt-1">
@@ -72,7 +72,7 @@ export const SiteVisitModal: React.FC<SiteVisitModalProps> = ({
         </div>
 
         {/* Body */}
-        <div className="p-6 sm:p-8">
+        <div className="p-4 sm:p-6 md:p-8">
           {isConfirmed ? (
             <div className="text-center py-6 space-y-4">
               <div className="w-14 h-14 bg-[#172720] text-[#B69A70] rounded-full mx-auto flex items-center justify-center border border-[#B69A70]/40">

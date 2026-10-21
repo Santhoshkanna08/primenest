@@ -36,7 +36,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   const spotlightProperty = properties.find((p) => p.id === 'pn-308-cypress-travertine') || properties[2];
 
   return (
-    <div className="w-full">
+    <div className="w-full overflow-hidden">
       {/* 1. Cinematic Hero Section with Asset 2 Luxury Villa Video Background */}
       <Hero
         onSearch={onSearch}

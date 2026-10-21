@@ -16,7 +16,7 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({
     : siteConfig.buildGeneralEnquiryWhatsAppUrl();
 
   return (
-    <aside aria-label="Direct messaging contact" className="fixed bottom-24 right-6 z-40">
+    <aside aria-label="Direct messaging contact" className="fixed bottom-22 sm:bottom-24 right-3 sm:right-6 z-40">
       <a
         href={whatsappUrl}
         target="_blank"

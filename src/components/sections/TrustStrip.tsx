@@ -26,8 +26,8 @@ export const TrustStrip: React.FC = () => {
   ];
 
   return (
-    <section className="bg-[#202B25] text-[#E7DCC7] border-y border-[#E7DCC7]/10 py-10">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8">
+    <section className="bg-[#202B25] text-[#E7DCC7] border-y border-[#E7DCC7]/10 py-8 sm:py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {values.map((val, idx) => {
             const Icon = val.icon;

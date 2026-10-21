@@ -80,11 +80,11 @@ export const PlottedDevelopments: React.FC<PlottedDevelopmentsProps> = ({
         </div>
 
         {/* Master Showcase Layout: Vertical Video Container + Architectural Specifications */}
-        <div className="bg-[#202B25] rounded-2xl border border-[#E7DCC7]/15 overflow-hidden p-6 sm:p-10 shadow-2xl">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+        <div className="bg-[#202B25] rounded-2xl border border-[#E7DCC7]/15 overflow-hidden p-4 sm:p-8 lg:p-10 shadow-2xl">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
             {/* Left Column: Natural 9:16 Aspect-Ratio Video Container */}
             <div className="lg:col-span-5 flex justify-center">
-              <div className="relative w-full max-w-[340px] sm:max-w-[360px] aspect-[9/16] rounded-xl overflow-hidden border border-[#B69A70]/40 shadow-2xl bg-[#172720] group">
+              <div className="relative w-full max-w-[270px] xs:max-w-[300px] sm:max-w-[360px] aspect-[9/16] rounded-xl overflow-hidden border border-[#B69A70]/40 shadow-2xl bg-[#172720] group">
                 {/* Poster fallback */}
                 <img
                   src="/assets/videos/residential-plots-poster.jpg"
@@ -105,6 +105,7 @@ export const PlottedDevelopments: React.FC<PlottedDevelopmentsProps> = ({
                   playsInline
                   preload="metadata"
                   onLoadedData={() => setVideoLoaded(true)}
+                  onError={() => setVideoLoaded(false)}
                   className={`w-full h-full object-cover transition-opacity duration-500 ${
                     videoLoaded ? 'opacity-100' : 'opacity-0'
                   }`}

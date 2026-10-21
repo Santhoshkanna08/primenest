@@ -49,14 +49,14 @@ export const Hero: React.FC<HeroProps> = ({
   };
 
   return (
-    <section className="relative min-h-[94svh] lg:min-h-screen w-full flex flex-col justify-between pt-32 pb-10 overflow-hidden bg-[#172720]">
+    <section className="relative min-h-[100svh] w-full flex flex-col justify-between pt-24 sm:pt-28 lg:pt-32 pb-8 sm:pb-10 overflow-hidden bg-[#172720]">
       {/* Background Media Container */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         {/* Static poster fallback always loaded first */}
         <img
           src="/assets/videos/luxury-villa-hero-poster.jpg"
           alt="PrimeNest Luxury Architectural Villa at Twilight"
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+          className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-1000 ${
             videoLoaded ? 'opacity-0' : 'opacity-100'
           }`}
         />
@@ -73,7 +73,8 @@ export const Hero: React.FC<HeroProps> = ({
             playsInline
             preload="auto"
             onLoadedData={() => setVideoLoaded(true)}
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+            onError={() => setVideoLoaded(false)}
+            className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-1000 ${
               videoLoaded ? 'opacity-100' : 'opacity-0'
             }`}
           />
@@ -86,37 +87,37 @@ export const Hero: React.FC<HeroProps> = ({
       </div>
 
       {/* Main Content Area */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 w-full my-auto py-6 sm:py-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full my-auto py-4 sm:py-8">
         <div className="max-w-3xl">
           {/* Eyebrow */}
-          <div className="inline-flex items-center gap-2 mb-4 text-[#B69A70]">
+          <div className="inline-flex items-center gap-2 mb-3 sm:mb-4 text-[#B69A70]">
             <Compass className="w-3.5 h-3.5" />
-            <span className="text-xs uppercase tracking-[0.25em] font-mono font-semibold">
+            <span className="text-[11px] sm:text-xs uppercase tracking-[0.25em] font-mono font-semibold">
               YOUR NEXT CHAPTER STARTS HERE
             </span>
           </div>
 
           {/* Headline */}
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-serif font-normal text-[#F7F5EF] leading-[1.1] tracking-tight mb-6 [text-wrap:balance]">
+          <h1 className="text-3xl xs:text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-serif font-normal text-[#F7F5EF] leading-[1.12] tracking-tight mb-4 sm:mb-6 [text-wrap:balance]">
             Find Your Place in the <span className="italic font-light text-[#E7DCC7]">Extraordinary.</span>
           </h1>
 
           {/* Supporting Text */}
-          <p className="text-base sm:text-lg lg:text-xl text-[#E7DCC7]/90 font-light leading-relaxed max-w-xl mb-8">
+          <p className="text-sm sm:text-lg lg:text-xl text-[#E7DCC7]/90 font-light leading-relaxed max-w-xl mb-6 sm:mb-8">
             Thoughtfully selected properties. Exceptional places to call your own.
           </p>
 
           {/* CTAs & Ambient Controls */}
-          <div className="flex flex-wrap items-center gap-4 mb-6">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mb-6">
             <button
               onClick={onExploreClick}
-              className="px-8 py-3.5 bg-[#B69A70] hover:bg-[#E7DCC7] text-[#172720] text-xs uppercase tracking-widest font-semibold rounded shadow-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B69A70]"
+              className="w-full sm:w-auto px-8 py-3.5 bg-[#B69A70] hover:bg-[#E7DCC7] text-[#172720] text-xs uppercase tracking-widest font-semibold rounded shadow-lg transition-all duration-200 text-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B69A70]"
             >
               Explore Properties
             </button>
             <button
               onClick={onProjectsClick}
-              className="px-7 py-3.5 bg-transparent hover:bg-white/10 text-white border border-[#E7DCC7]/30 text-xs uppercase tracking-widest font-semibold rounded backdrop-blur-sm transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B69A70]"
+              className="w-full sm:w-auto px-7 py-3.5 bg-transparent hover:bg-white/10 text-white border border-[#E7DCC7]/30 text-xs uppercase tracking-widest font-semibold rounded backdrop-blur-sm transition-all duration-200 text-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B69A70]"
             >
               Discover Our Projects
             </button>
@@ -150,7 +151,7 @@ export const Hero: React.FC<HeroProps> = ({
       </div>
 
       {/* Bottom Search Bar & Subtle Scroll Indicator */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 w-full mt-4">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full mt-2 sm:mt-4">
         <SearchFilterBar onSearch={onSearch} />
 
         <div className="flex items-center justify-between pt-5 text-[11px] font-mono uppercase tracking-widest text-[#E7DCC7]/50">

@@ -23,8 +23,8 @@ export const FavoritesPage: React.FC<FavoritesPageProps> = ({
   const savedProperties = properties.filter((p) => favoriteIds.includes(p.id));
 
   return (
-    <div className="pt-28 pb-24 bg-[#F7F5EF] min-h-screen text-[#202B25]">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8">
+    <div className="pt-24 sm:pt-28 pb-24 bg-[#F7F5EF] min-h-screen text-[#202B25]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 pb-6 border-b border-[#E7DCC7]/60">
           <div>
             <div className="inline-flex items-center gap-2 mb-2 text-[#B69A70]">

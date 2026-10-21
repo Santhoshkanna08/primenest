@@ -52,20 +52,20 @@ export const Header: React.FC<HeaderProps> = ({
             : 'bg-gradient-to-b from-[#172720]/80 via-[#172720]/40 to-transparent py-5'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 flex items-center justify-between gap-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 flex items-center justify-between gap-2 sm:gap-4 lg:gap-8">
           {/* Zone 1: Single text element wordmark */}
           <button
             onClick={() => handleLinkClick('/')}
-            className="flex items-center gap-3 text-left focus:outline-none focus-visible:ring-1 focus-visible:ring-[#B69A70]"
+            className="flex items-center gap-2 sm:gap-3 text-left focus:outline-none focus-visible:ring-1 focus-visible:ring-[#B69A70]"
           >
-            <div className="w-8 h-8 rounded border border-[#B69A70]/60 flex items-center justify-center bg-[#172720]/60 text-[#B69A70] shrink-0">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="w-5 h-5">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded border border-[#B69A70]/60 flex items-center justify-center bg-[#172720]/60 text-[#B69A70] shrink-0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="w-4 h-4 sm:w-5 sm:h-5">
                 <path d="M3 10L12 3L21 10V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V10Z" />
                 <path d="M9 21V13H15V21" />
               </svg>
             </div>
-            <span className="text-xl sm:text-2xl font-serif tracking-tight text-[#F7F5EF] whitespace-nowrap shrink-0">
-              PrimeNest<span className="text-[#B69A70] font-sans font-light text-base ml-1.5 uppercase tracking-widest">Properties</span>
+            <span className="text-lg sm:text-2xl font-serif tracking-tight text-[#F7F5EF] whitespace-nowrap shrink-0">
+              PrimeNest<span className="text-[#B69A70] font-sans font-light text-[10px] sm:text-xs md:text-base ml-1 sm:ml-1.5 uppercase tracking-wider sm:tracking-widest hidden xs:inline">Properties</span>
             </span>
           </button>
 
@@ -91,7 +91,7 @@ export const Header: React.FC<HeaderProps> = ({
           </nav>
 
           {/* Zone 3: 1 primary action + bookmark quick trigger + ambient music */}
-          <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-3 lg:gap-4 shrink-0">
             {/* Ambient Music Control */}
             <AmbientMusicPlayer />
 
@@ -113,7 +113,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Primary Action Button */}
             <button
               onClick={onOpenEnquiry}
-              className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 text-xs uppercase tracking-widest font-semibold text-[#172720] bg-[#B69A70] hover:bg-[#E7DCC7] rounded transition-all duration-200 shadow-sm whitespace-nowrap shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B69A70]"
+              className="hidden sm:inline-flex items-center gap-2 px-4 lg:px-5 py-2.5 text-xs uppercase tracking-widest font-semibold text-[#172720] bg-[#B69A70] hover:bg-[#E7DCC7] rounded transition-all duration-200 shadow-sm whitespace-nowrap shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B69A70]"
             >
               <span>Enquire Now</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
@@ -133,7 +133,7 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Mobile Drawer Menu */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-30 lg:hidden bg-[#172720]/95 backdrop-blur-xl pt-24 px-6 flex flex-col justify-between pb-10">
+        <div className="fixed inset-0 z-30 lg:hidden bg-[#172720]/98 backdrop-blur-xl pt-24 px-6 flex flex-col justify-between pb-10 overflow-y-auto">
           <div className="space-y-6">
             <span className="text-xs uppercase tracking-widest text-[#B69A70] font-mono">
               PrimeNest Navigation
@@ -143,7 +143,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   key={item.route}
                   onClick={() => handleLinkClick(item.route)}
-                  className={`text-left text-2xl font-serif transition-colors ${
+                  className={`text-left text-2xl font-serif transition-colors py-1 ${
                     currentRoute === item.route ? 'text-[#B69A70]' : 'text-[#F7F5EF]'
                   }`}
                 >
@@ -153,17 +153,17 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
 
-          <div className="space-y-4 pt-8 border-t border-[#E7DCC7]/10">
+          <div className="space-y-4 pt-8 border-t border-[#E7DCC7]/10 mt-6">
             <div className="flex items-center justify-between pb-2">
               <span className="text-xs uppercase tracking-wider font-mono text-[#B69A70]">Ambient Music</span>
-              <AmbientMusicPlayer />
+              <AmbientMusicPlayer showInvitationBanner={false} />
             </div>
             <button
               onClick={() => {
                 setIsMobileMenuOpen(false);
                 onOpenEnquiry();
               }}
-              className="w-full py-3.5 text-center text-xs uppercase tracking-widest font-semibold text-[#172720] bg-[#B69A70] rounded"
+              className="w-full py-3.5 text-center text-xs uppercase tracking-widest font-semibold text-[#172720] bg-[#B69A70] rounded shadow-md"
             >
               Enquire Now
             </button>

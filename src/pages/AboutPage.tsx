@@ -10,8 +10,8 @@ interface AboutPageProps {
 
 export const AboutPage: React.FC<AboutPageProps> = ({ onOpenEnquiry, onNavigate }) => {
   return (
-    <div className="pt-28 pb-24 bg-[#F7F5EF] min-h-screen text-[#202B25]">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8">
+    <div className="pt-24 sm:pt-28 pb-24 bg-[#F7F5EF] min-h-screen text-[#202B25]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="max-w-3xl mb-16">
           <div className="inline-flex items-center gap-2 mb-2 text-[#B69A70]">
@@ -60,7 +60,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenEnquiry, onNavigate 
           <div className="lg:col-span-6 relative">
             <div className="aspect-[4/3] rounded-xl overflow-hidden border border-[#E7DCC7] shadow-xl">
               <ResilientImage
-                src="/src/assets/images/featured_villa_estate_1792478314692.jpg"
+                src="/assets/images/featured_villa_estate_1792478314692.jpg"
                 alt="PrimeNest Architectural Excellence"
                 className="w-full h-full object-cover"
                 containerClassName="h-full"

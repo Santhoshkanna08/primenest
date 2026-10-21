@@ -10,8 +10,8 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenEnquiry }) => {
   return (
-    <footer className="bg-[#172720] text-[#E7DCC7] pt-20 pb-12 border-t border-[#E7DCC7]/10">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8">
+    <footer className="bg-[#172720] text-[#E7DCC7] pt-16 sm:pt-20 pb-12 border-t border-[#E7DCC7]/10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 pb-16 border-b border-[#E7DCC7]/10">
           {/* Brand & Editorial Column */}
           <div className="lg:col-span-2 space-y-5">

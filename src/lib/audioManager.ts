@@ -4,15 +4,23 @@ class AudioManager {
   private audio: HTMLAudioElement | null = null;
   private isPlaying = false;
   private isMuted = false;
-  private volume = 0.35; // Elegant, comfortable ambient level
+  private volume = 0.28; // Elegant, comfortable ambient luxury level
   private userManuallyPaused = false;
+  private autoplayBlocked = false;
   private listeners: Set<() => void> = new Set();
   private hasInitialized = false;
-  private hasStartedAutoPlay = false;
+  private hasAttemptedAutoStart = false;
+
+  private primaryAudioPath = '/assets/audio/primenest-ambient.mp3';
+  private fallbackAudioPath = '/assets/aistudio/WhatsApp_Audio_2026-10-20_at_1.28.19_PM_24e2d863.mpeg';
 
   private constructor() {
-    // Default to unmuted on site entry so music can play as requested
-    this.isMuted = false;
+    if (typeof window !== 'undefined') {
+      const savedPref = localStorage.getItem('primenest_music_pref');
+      if (savedPref === 'off') {
+        this.userManuallyPaused = true;
+      }
+    }
   }
 
   public static getInstance(): AudioManager {
@@ -25,8 +33,7 @@ class AudioManager {
   public init() {
     if (this.hasInitialized || typeof window === 'undefined') return;
 
-    // Use the uploaded audio asset directly with graceful fallback
-    this.audio = new Audio('/assets/aistudio/WhatsApp_Audio_2026-10-20_at_1.28.19_PM_24e2d863.mpeg');
+    this.audio = new Audio(this.primaryAudioPath);
     this.audio.setAttribute('playsinline', 'true');
     this.audio.setAttribute('webkit-playsinline', 'true');
     this.audio.loop = true;
@@ -35,6 +42,7 @@ class AudioManager {
 
     this.audio.addEventListener('play', () => {
       this.isPlaying = true;
+      this.autoplayBlocked = false;
       this.notify();
     });
 
@@ -49,11 +57,11 @@ class AudioManager {
     });
 
     this.audio.addEventListener('error', () => {
-      console.warn('Primary audio failed or not supported, attempting fallback audio/mpeg...');
-      if (this.audio && !this.audio.src.includes('primenest-ambient.mp3')) {
-        this.audio.src = '/assets/audio/primenest-ambient.mp3';
+      if (this.audio && !this.audio.src.includes(this.fallbackAudioPath)) {
+        console.warn('PrimeNest: Primary audio format fallback, attempting secondary source...');
+        this.audio.src = this.fallbackAudioPath;
         this.audio.load();
-        if (this.isPlaying || !this.userManuallyPaused) {
+        if (this.isPlaying || (!this.userManuallyPaused && !this.autoplayBlocked)) {
           this.audio.play().catch(() => {});
         }
       } else {
@@ -66,52 +74,73 @@ class AudioManager {
   }
 
   /**
-   * Automatically starts playing ambient music whenever the user enters the website.
-   * If browser autoplay policy prevents immediate unmuted audio, it hooks into the
-   * very first user interaction (touch, tap, click, key, or scroll) anywhere on the page
-   * to start playing immediately.
+   * Attempts to start ambient audio playback on site entry.
+   * Respects explicit visitor preference stored in localStorage.
+   * If browser autoplay restrictions reject immediate unmuted playback,
+   * sets autoplayBlocked = true so the UI can display the subtle invitation.
    */
   public autoStart() {
-    if (this.hasStartedAutoPlay && this.isPlaying) return;
-    this.hasStartedAutoPlay = true;
-    this.userManuallyPaused = false;
+    if (this.hasAttemptedAutoStart && this.isPlaying) return;
+    this.hasAttemptedAutoStart = true;
+
+    // Check user preference
+    if (typeof window !== 'undefined') {
+      const savedPref = localStorage.getItem('primenest_music_pref');
+      if (savedPref === 'off') {
+        this.userManuallyPaused = true;
+        this.isPlaying = false;
+        this.autoplayBlocked = false;
+        this.notify();
+        return;
+      }
+    }
+
     this.init();
     if (!this.audio) return;
 
     this.isMuted = false;
     this.audio.muted = false;
-    this.audio.volume = Math.min(this.volume, 0.15);
+    this.audio.volume = Math.min(this.volume, 0.12);
 
     const playPromise = this.audio.play();
     if (playPromise !== undefined) {
       playPromise
         .then(() => {
           this.isPlaying = true;
+          this.autoplayBlocked = false;
+          this.userManuallyPaused = false;
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('primenest_music_pref', 'on');
+          }
           this.fadeIn(this.volume, 1200);
           this.notify();
         })
-        .catch((err) => {
-          // Modern browsers block autoplay until first user gesture
-          console.info('PrimeNest: Autoplay awaiting first user gesture:', err?.name || err);
+        .catch(() => {
+          // Browser autoplay restriction active
           this.isPlaying = false;
+          this.autoplayBlocked = true;
           this.notify();
 
+          // Also set up a gentle one-time interaction listener as a safety net
           const triggerOnInteraction = () => {
             if (!this.isPlaying && !this.userManuallyPaused) {
-              this.play();
+              const pref = typeof window !== 'undefined' ? localStorage.getItem('primenest_music_pref') : null;
+              if (pref !== 'off') {
+                this.play();
+              }
             }
             cleanup();
           };
 
           const cleanup = () => {
-            const events = ['pointerdown', 'touchstart', 'click', 'keydown', 'scroll', 'wheel'];
+            const events = ['pointerdown', 'touchstart', 'click', 'keydown'];
             events.forEach((evt) => {
               window.removeEventListener(evt, triggerOnInteraction);
               document.removeEventListener(evt, triggerOnInteraction);
             });
           };
 
-          const events = ['pointerdown', 'touchstart', 'click', 'keydown', 'scroll', 'wheel'];
+          const events = ['pointerdown', 'touchstart', 'click', 'keydown'];
           events.forEach((evt) => {
             window.addEventListener(evt, triggerOnInteraction, { passive: true, once: true });
             document.addEventListener(evt, triggerOnInteraction, { passive: true, once: true });
@@ -123,25 +152,40 @@ class AudioManager {
   public play(): Promise<void> {
     this.init();
     this.userManuallyPaused = false;
+    this.autoplayBlocked = false;
+
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('primenest_music_pref', 'on');
+    }
+
     if (!this.audio) return Promise.resolve();
 
     this.isMuted = false;
     this.audio.muted = false;
-    this.audio.volume = this.volume > 0 ? this.volume : 0.35;
+    this.audio.volume = this.volume > 0 ? this.volume : 0.28;
 
-    return this.audio.play().then(() => {
-      this.isPlaying = true;
-      this.fadeIn(this.volume, 800);
-      this.notify();
-    }).catch(err => {
-      console.warn('Playback prevented by browser policy or error:', err);
-      this.isPlaying = false;
-      this.notify();
-    });
+    return this.audio
+      .play()
+      .then(() => {
+        this.isPlaying = true;
+        this.autoplayBlocked = false;
+        this.fadeIn(this.volume, 800);
+        this.notify();
+      })
+      .catch((err) => {
+        console.warn('PrimeNest: Audio playback prevented:', err);
+        this.isPlaying = false;
+        this.autoplayBlocked = true;
+        this.notify();
+      });
   }
 
   public pause() {
     this.userManuallyPaused = true;
+    this.autoplayBlocked = false;
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('primenest_music_pref', 'off');
+    }
     if (this.audio) {
       this.audio.pause();
       this.isPlaying = false;
@@ -157,28 +201,8 @@ class AudioManager {
     }
   }
 
-  public setMuted(muted: boolean) {
-    this.isMuted = muted;
-    if (this.audio) {
-      this.audio.muted = muted;
-      this.audio.volume = muted ? 0 : this.volume;
-    }
-    this.notify();
-  }
-
-  public toggleMute() {
-    if (this.isPlaying) {
-      this.pause();
-    } else {
-      this.play();
-    }
-  }
-
-  public setVolume(vol: number) {
-    this.volume = Math.max(0, Math.min(1, vol));
-    if (this.audio && !this.isMuted) {
-      this.audio.volume = this.volume;
-    }
+  public dismissAutoplayInvitation() {
+    this.autoplayBlocked = false;
     this.notify();
   }
 
@@ -187,7 +211,8 @@ class AudioManager {
       isPlaying: this.isPlaying,
       isMuted: this.isMuted,
       volume: this.volume,
-      userManuallyPaused: this.userManuallyPaused
+      userManuallyPaused: this.userManuallyPaused,
+      autoplayBlocked: this.autoplayBlocked,
     };
   }
 
@@ -199,7 +224,7 @@ class AudioManager {
   }
 
   private notify() {
-    this.listeners.forEach(fn => fn());
+    this.listeners.forEach((fn) => fn());
   }
 
   private fadeIn(targetVolume: number, durationMs = 1000) {

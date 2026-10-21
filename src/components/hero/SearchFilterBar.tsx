@@ -51,11 +51,11 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
     <div className={`w-full max-w-5xl mx-auto ${className}`}>
       {/* Intent switcher */}
       <div className="flex items-center gap-2 mb-3">
-        <div className="inline-flex items-center bg-[#172720]/80 backdrop-blur-md p-1 rounded border border-[#E7DCC7]/15">
+        <div className="flex flex-wrap sm:inline-flex items-center bg-[#172720]/80 backdrop-blur-md p-1 rounded border border-[#E7DCC7]/15 w-full sm:w-auto">
           <button
             type="button"
             onClick={() => setIntent('buy')}
-            className={`px-4 py-1.5 text-xs font-semibold tracking-wider transition-all rounded ${
+            className={`flex-1 sm:flex-initial px-3 sm:px-4 py-1.5 text-[11px] sm:text-xs font-semibold tracking-wider transition-all rounded text-center whitespace-nowrap ${
               intent === 'buy'
                 ? 'bg-[#B69A70] text-[#172720]'
                 : 'text-[#E7DCC7]/70 hover:text-white'
@@ -66,7 +66,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
           <button
             type="button"
             onClick={() => setIntent('invest')}
-            className={`px-4 py-1.5 text-xs font-semibold tracking-wider transition-all rounded ${
+            className={`flex-1 sm:flex-initial px-3 sm:px-4 py-1.5 text-[11px] sm:text-xs font-semibold tracking-wider transition-all rounded text-center whitespace-nowrap ${
               intent === 'invest'
                 ? 'bg-[#B69A70] text-[#172720]'
                 : 'text-[#E7DCC7]/70 hover:text-white'

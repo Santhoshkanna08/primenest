@@ -27,8 +27,8 @@ export const OurApproach: React.FC<OurApproachProps> = ({ onOpenConsultation }) 
   ];
 
   return (
-    <section className="py-24 bg-[#F7F5EF] text-[#202B25] border-t border-[#E7DCC7]/40">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8">
+    <section className="py-16 sm:py-24 bg-[#F7F5EF] text-[#202B25] border-t border-[#E7DCC7]/40">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mb-16">
           <span className="text-xs uppercase tracking-[0.25em] font-mono font-semibold text-[#B69A70]">
             OUR COMMITMENT

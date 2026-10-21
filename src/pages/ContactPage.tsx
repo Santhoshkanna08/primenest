@@ -40,8 +40,8 @@ export const ContactPage: React.FC = () => {
   );
 
   return (
-    <div className="pt-28 pb-24 bg-[#F7F5EF] min-h-screen text-[#202B25]">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8">
+    <div className="pt-24 sm:pt-28 pb-24 bg-[#F7F5EF] min-h-screen text-[#202B25]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="max-w-3xl mb-14">
           <span className="text-xs uppercase tracking-[0.25em] font-mono font-semibold text-[#B69A70]">

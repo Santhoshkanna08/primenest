@@ -98,7 +98,7 @@ export default function App() {
     : [];
 
   return (
-    <div className="min-h-screen flex flex-col justify-between bg-[#F7F5EF] text-[#202B25] selection:bg-[#B69A70]/30 selection:text-[#172720]">
+    <div className="min-h-screen flex flex-col justify-between bg-[#F7F5EF] text-[#202B25] selection:bg-[#B69A70]/30 selection:text-[#172720] overflow-x-hidden w-full max-w-full relative">
       {/* 1. Header Navigation adhering to Top Bar Contract */}
       <Header
         currentRoute={currentRoute}
@@ -109,7 +109,7 @@ export default function App() {
       />
 
       {/* 2. Main Page View Routing */}
-      <main className="flex-grow">
+      <main className="flex-grow w-full max-w-full overflow-x-hidden">
         {currentRoute === '/' && (
           <HomePage
             properties={propertiesData}
