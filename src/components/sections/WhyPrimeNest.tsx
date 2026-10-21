@@ -27,38 +27,43 @@ export const WhyPrimeNest: React.FC = () => {
   ];
 
   return (
-    <section className="py-16 sm:py-24 bg-[#F7F5EF] text-[#202B25] border-t border-[#E7DCC7]/40">
+    <section id="why-primenest" className="py-16 sm:py-24 bg-[#F7F5EF] text-[#202B25] border-t border-[#E7DCC7]/40 scroll-mt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           {/* Left Column: Architectural Photo Framing */}
-          <div className="lg:col-span-5 relative">
-            <div className="aspect-[4/5] rounded-xl overflow-hidden border border-[#E7DCC7] shadow-xl relative">
+          <div className="lg:col-span-5 flex flex-col justify-between">
+            <div className="aspect-[4/5] rounded-xl overflow-hidden border border-[#E7DCC7] shadow-xl relative group">
               <ResilientImage
                 src="/assets/images/luxury_modern_penthouse_1792478315544.jpg"
                 alt="Architectural Interior Gallery"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 containerClassName="h-full"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent pointer-events-none" />
               
               <div className="absolute bottom-6 left-6 right-6 text-white z-10">
-                <span className="text-[11px] font-mono tracking-widest text-[#B69A70] uppercase">
+                <span className="text-[11px] font-mono tracking-widest text-[#B69A70] uppercase block">
                   OUR PHILOSOPHY
                 </span>
-                <p className="text-xl font-serif mt-1">
+                <p className="text-lg sm:text-xl font-serif mt-1 leading-snug">
                   Spaces curated for permanence and peace of mind.
                 </p>
               </div>
             </div>
 
-            {/* Corner architectural badge */}
-            <div className="absolute -bottom-6 -right-6 hidden sm:block bg-[#172720] text-white p-6 rounded-lg border border-[#B69A70]/40 shadow-xl max-w-xs">
-              <p className="text-xs font-mono text-[#B69A70] uppercase tracking-wider mb-1">
-                PRIMENEST STANDARD
-              </p>
-              <p className="text-xs text-[#E7DCC7]/90 leading-relaxed">
-                Zero speculative hype. Only verified plots, land titles, and architectural estates.
-              </p>
+            {/* Refined architectural trust badge docked cleanly below photo */}
+            <div className="mt-5 bg-[#172720] text-white p-5 sm:p-6 rounded-xl border border-[#B69A70]/40 shadow-xl flex items-start gap-4">
+              <div className="w-10 h-10 rounded-lg bg-[#B69A70]/15 border border-[#B69A70]/40 flex items-center justify-center shrink-0 text-[#B69A70]">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-xs font-mono text-[#B69A70] uppercase tracking-wider mb-1 font-semibold">
+                  PRIMENEST STANDARD
+                </p>
+                <p className="text-xs sm:text-sm text-[#E7DCC7]/90 leading-relaxed">
+                  Zero speculative hype. Only verified plots, land titles, and architectural estates.
+                </p>
+              </div>
             </div>
           </div>
 

@@ -29,7 +29,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenEnquiry, onNavigate 
         </div>
 
         {/* Narrative Split with Photography */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center mb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start mb-24">
           <div className="lg:col-span-6 space-y-6 text-[#777B75] leading-relaxed text-sm sm:text-base">
             <h2 className="text-2xl sm:text-3xl font-serif text-[#172720]">
               Our Philosophy: Selective Curation Over Volume
