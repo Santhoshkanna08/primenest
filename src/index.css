@@ -14,6 +14,10 @@
   --color-muted: #777B75;
 }
 
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 @layer base {
   html {
     font-family: var(--font-sans);
@@ -23,12 +27,14 @@
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
   }
 
   body {
     overflow-x: hidden;
     width: 100%;
     max-width: 100%;
+    min-height: 100%;
     position: relative;
   }
 
@@ -38,6 +44,7 @@
 
   img, video {
     max-width: 100%;
+    height: auto;
   }
 }
 

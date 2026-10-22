@@ -13,6 +13,7 @@ import { EnquiryModal } from './components/forms/EnquiryModal';
 import { SiteVisitModal } from './components/forms/SiteVisitModal';
 import { ChatLauncher } from './components/chat/ChatLauncher';
 import { ChatPanel } from './components/chat/ChatPanel';
+import { MusicPrompt } from './components/audio/MusicPrompt';
 import { propertiesData } from './data/properties';
 import { Property, SearchFilters } from './types/property';
 import { useFavorites, saveFavorites } from './lib/favorites';
@@ -198,6 +199,7 @@ export default function App() {
       <FloatingWhatsApp
         currentPropertyTitle={selectedProperty?.title}
         currentPropertyRef={selectedProperty?.refCode}
+        isChatOpen={isChatOpen}
       />
 
       {/* Floating AI Chatbot Launcher */}
@@ -205,6 +207,9 @@ export default function App() {
         isOpen={isChatOpen}
         onToggle={() => setIsChatOpen(!isChatOpen)}
       />
+
+      {/* Non-intrusive Ambient Music Invitation (if browser blocks autoplay) */}
+      <MusicPrompt />
 
       {/* AI Assistant Chat Panel */}
       <ChatPanel

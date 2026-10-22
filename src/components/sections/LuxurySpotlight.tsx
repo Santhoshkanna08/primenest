@@ -21,7 +21,7 @@ export const LuxurySpotlight: React.FC<LuxurySpotlightProps> = ({
         <div className="bg-[#202B25] text-white rounded-2xl overflow-hidden border border-[#E7DCC7]/20 shadow-2xl">
           <div className="grid grid-cols-1 lg:grid-cols-12 items-stretch">
             {/* Left Content / Editorial Story */}
-            <div className="lg:col-span-5 p-5 sm:p-10 lg:p-16 flex flex-col justify-between">
+            <div className="lg:col-span-5 p-4 xs:p-6 sm:p-10 lg:p-16 flex flex-col justify-between min-w-0 max-w-full">
               <div>
                 <div className="inline-flex items-center gap-2 mb-4 text-[#B69A70]">
                   <Sparkles className="w-3.5 h-3.5" />
@@ -30,37 +30,37 @@ export const LuxurySpotlight: React.FC<LuxurySpotlightProps> = ({
                   </span>
                 </div>
 
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif text-white tracking-tight leading-tight mb-4 [text-wrap:balance]">
+                <h2 className="text-2xl sm:text-4xl lg:text-5xl font-serif text-white tracking-tight leading-tight mb-4 [text-wrap:balance] break-words">
                   Designed for the Way You Want to Live.
                 </h2>
 
-                <p className="text-sm sm:text-base text-[#E7DCC7]/80 leading-relaxed mb-6 sm:mb-8">
+                <p className="text-sm sm:text-base text-[#E7DCC7]/80 leading-relaxed mb-6 sm:mb-8 break-words">
                   {property.description}
                 </p>
 
                 {/* Specs Box */}
-                <div className="border-y border-[#E7DCC7]/15 py-4 sm:py-6 my-4 sm:my-6 grid grid-cols-3 gap-2 sm:gap-4 text-center">
-                  <div>
-                    <span className="text-xl sm:text-2xl font-serif text-white block">
+                <div className="border-y border-[#E7DCC7]/15 py-3 sm:py-6 my-4 sm:my-6 grid grid-cols-3 gap-1 sm:gap-4 text-center min-w-0">
+                  <div className="min-w-0">
+                    <span className="text-lg xs:text-xl sm:text-2xl font-serif text-white block truncate">
                       {property.specs.bedrooms}
                     </span>
-                    <span className="text-[10px] sm:text-[11px] font-mono text-[#E7DCC7]/70 uppercase tracking-wider">
+                    <span className="text-[9px] xs:text-[10px] sm:text-[11px] font-mono text-[#E7DCC7]/70 uppercase tracking-wider block truncate">
                       Bedrooms
                     </span>
                   </div>
-                  <div className="border-x border-[#E7DCC7]/15">
-                    <span className="text-xl sm:text-2xl font-serif text-white block">
+                  <div className="border-x border-[#E7DCC7]/15 min-w-0 px-1">
+                    <span className="text-lg xs:text-xl sm:text-2xl font-serif text-white block truncate">
                       {property.specs.bathrooms}
                     </span>
-                    <span className="text-[10px] sm:text-[11px] font-mono text-[#E7DCC7]/70 uppercase tracking-wider">
+                    <span className="text-[9px] xs:text-[10px] sm:text-[11px] font-mono text-[#E7DCC7]/70 uppercase tracking-wider block truncate">
                       Bathrooms
                     </span>
                   </div>
-                  <div>
-                    <span className="text-xl sm:text-2xl font-serif text-white block">
+                  <div className="min-w-0">
+                    <span className="text-lg xs:text-xl sm:text-2xl font-serif text-white block truncate">
                       {property.specs.builtUpAreaSqFt?.toLocaleString()}
                     </span>
-                    <span className="text-[10px] sm:text-[11px] font-mono text-[#E7DCC7]/70 uppercase tracking-wider">
+                    <span className="text-[9px] xs:text-[10px] sm:text-[11px] font-mono text-[#E7DCC7]/70 uppercase tracking-wider block truncate">
                       Sq.Ft Built
                     </span>
                   </div>

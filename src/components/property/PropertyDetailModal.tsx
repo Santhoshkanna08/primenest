@@ -209,55 +209,55 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
                   <h3 className="text-xs uppercase tracking-widest font-mono text-[#172720] font-semibold mb-3">
                     Property Specifications
                   </h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-5 bg-white rounded-lg border border-[#E7DCC7]/60">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 p-3.5 sm:p-5 bg-white rounded-lg border border-[#E7DCC7]/60 min-w-0 max-w-full">
                     {property.specs.bedrooms && (
-                      <div>
+                      <div className="min-w-0">
                         <span className="text-[11px] text-[#777B75] block font-mono">Bedrooms</span>
-                        <span className="text-lg font-serif font-semibold text-[#172720] flex items-center gap-1.5 mt-0.5">
-                          <Bed className="w-4 h-4 text-[#B69A70]" />
-                          <span>{property.specs.bedrooms} Suites</span>
+                        <span className="text-base sm:text-lg font-serif font-semibold text-[#172720] flex items-center gap-1.5 mt-0.5 truncate">
+                          <Bed className="w-4 h-4 text-[#B69A70] shrink-0" />
+                          <span className="truncate">{property.specs.bedrooms} Suites</span>
                         </span>
                       </div>
                     )}
                     {property.specs.bathrooms && (
-                      <div>
+                      <div className="min-w-0">
                         <span className="text-[11px] text-[#777B75] block font-mono">Bathrooms</span>
-                        <span className="text-lg font-serif font-semibold text-[#172720] flex items-center gap-1.5 mt-0.5">
-                          <Bath className="w-4 h-4 text-[#B69A70]" />
-                          <span>{property.specs.bathrooms} Baths</span>
+                        <span className="text-base sm:text-lg font-serif font-semibold text-[#172720] flex items-center gap-1.5 mt-0.5 truncate">
+                          <Bath className="w-4 h-4 text-[#B69A70] shrink-0" />
+                          <span className="truncate">{property.specs.bathrooms} Baths</span>
                         </span>
                       </div>
                     )}
                     {property.specs.plotSizeSqFt && (
-                      <div>
+                      <div className="min-w-0">
                         <span className="text-[11px] text-[#777B75] block font-mono">Plot Extent</span>
-                        <span className="text-lg font-serif font-semibold text-[#172720] flex items-center gap-1.5 mt-0.5">
-                          <Maximize2 className="w-4 h-4 text-[#B69A70]" />
-                          <span>{property.specs.plotSizeSqFt.toLocaleString()} sq.ft</span>
+                        <span className="text-base sm:text-lg font-serif font-semibold text-[#172720] flex items-center gap-1.5 mt-0.5 truncate">
+                          <Maximize2 className="w-4 h-4 text-[#B69A70] shrink-0" />
+                          <span className="truncate">{property.specs.plotSizeSqFt.toLocaleString()} sq.ft</span>
                         </span>
                       </div>
                     )}
                     {property.specs.builtUpAreaSqFt && (
-                      <div>
+                      <div className="min-w-0">
                         <span className="text-[11px] text-[#777B75] block font-mono">Built Area</span>
-                        <span className="text-lg font-serif font-semibold text-[#172720] flex items-center gap-1.5 mt-0.5">
-                          <Maximize2 className="w-4 h-4 text-[#B69A70]" />
-                          <span>{property.specs.builtUpAreaSqFt.toLocaleString()} sq.ft</span>
+                        <span className="text-base sm:text-lg font-serif font-semibold text-[#172720] flex items-center gap-1.5 mt-0.5 truncate">
+                          <Maximize2 className="w-4 h-4 text-[#B69A70] shrink-0" />
+                          <span className="truncate">{property.specs.builtUpAreaSqFt.toLocaleString()} sq.ft</span>
                         </span>
                       </div>
                     )}
                     {property.specs.roadWidthFt && (
-                      <div>
+                      <div className="min-w-0">
                         <span className="text-[11px] text-[#777B75] block font-mono">Road Width</span>
-                        <span className="text-sm font-semibold text-[#172720] mt-0.5 block">
+                        <span className="text-xs sm:text-sm font-semibold text-[#172720] mt-0.5 block truncate">
                           {property.specs.roadWidthFt} Feet Wide
                         </span>
                       </div>
                     )}
                     {property.specs.facing && (
-                      <div>
+                      <div className="min-w-0">
                         <span className="text-[11px] text-[#777B75] block font-mono">Orientation</span>
-                        <span className="text-sm font-semibold text-[#172720] mt-0.5 block truncate">
+                        <span className="text-xs sm:text-sm font-semibold text-[#172720] mt-0.5 block truncate">
                           {property.specs.facing}
                         </span>
                       </div>

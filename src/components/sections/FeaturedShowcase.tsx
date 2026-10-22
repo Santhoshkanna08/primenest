@@ -91,14 +91,14 @@ export const FeaturedShowcase: React.FC<FeaturedShowcaseProps> = ({
               </div>
             </div>
 
-            <div className="p-6 sm:p-8 flex flex-col flex-grow bg-white">
+            <div className="p-4 sm:p-6 lg:p-8 flex flex-col flex-grow bg-white min-w-0 max-w-full">
               {/* Header Info */}
               <div>
-                <div className="flex items-center gap-1.5 text-xs text-[#777B75] mb-2">
-                  <MapPin className="w-3.5 h-3.5 text-[#B69A70]" />
-                  <span>{marquee.location.city}, {marquee.location.state}</span>
+                <div className="flex items-center gap-1.5 text-xs text-[#777B75] mb-2 min-w-0">
+                  <MapPin className="w-3.5 h-3.5 text-[#B69A70] shrink-0" />
+                  <span className="truncate">{marquee.location.city}, {marquee.location.state}</span>
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-serif text-[#172720] group-hover:text-[#B69A70] transition-colors mb-2">
+                <h3 className="text-xl sm:text-2xl lg:text-3xl font-serif text-[#172720] group-hover:text-[#B69A70] transition-colors mb-2 break-words">
                   {marquee.title}
                 </h3>
                 <p className="text-sm text-[#777B75] leading-relaxed">
@@ -110,11 +110,11 @@ export const FeaturedShowcase: React.FC<FeaturedShowcaseProps> = ({
               {marquee.editorialHighlight && (
                 <div className="my-5 p-4 rounded-lg bg-[#F7F5EF] border border-[#B69A70]/30 flex items-start gap-3">
                   <Sparkles className="w-4 h-4 text-[#B69A70] shrink-0 mt-0.5" />
-                  <div>
+                  <div className="min-w-0">
                     <span className="text-[10px] font-mono uppercase tracking-widest text-[#B69A70] font-semibold block mb-0.5">
                       Architectural Distinction
                     </span>
-                    <p className="text-xs sm:text-sm font-serif italic text-[#172720] leading-relaxed">
+                    <p className="text-xs sm:text-sm font-serif italic text-[#172720] leading-relaxed break-words">
                       "{marquee.editorialHighlight}"
                     </p>
                   </div>
@@ -131,7 +131,7 @@ export const FeaturedShowcase: React.FC<FeaturedShowcaseProps> = ({
                     {marquee.amenities.slice(0, 3).map((amenity, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center gap-2 text-xs text-[#202B25] bg-[#F7F5EF] border border-[#E7DCC7]/60 px-3 py-2 rounded"
+                        className="flex items-center gap-2 text-xs text-[#202B25] bg-[#F7F5EF] border border-[#E7DCC7]/60 px-3 py-2 rounded min-w-0"
                       >
                         <span className="w-1.5 h-1.5 rounded-full bg-[#B69A70] shrink-0" />
                         <span className="truncate font-medium">{amenity}</span>
@@ -143,8 +143,8 @@ export const FeaturedShowcase: React.FC<FeaturedShowcaseProps> = ({
 
               {/* Multi-Perspective Gallery Thumbnails */}
               {marquee.images && marquee.images.length > 1 && (
-                <div className="mb-5 pt-3 border-t border-[#E7DCC7]/40 flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
+                <div className="mb-5 pt-3 border-t border-[#E7DCC7]/40 flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
                     <span className="text-[10px] font-mono uppercase tracking-widest text-[#777B75] shrink-0">
                       Gallery Perspectives
                     </span>
@@ -152,7 +152,7 @@ export const FeaturedShowcase: React.FC<FeaturedShowcaseProps> = ({
                       {marquee.images.slice(1, 3).map((img, i) => (
                         <div
                           key={i}
-                          className="w-16 h-11 rounded border border-[#E7DCC7] overflow-hidden shrink-0 relative"
+                          className="w-14 sm:w-16 h-10 sm:h-11 rounded border border-[#E7DCC7] overflow-hidden shrink-0 relative"
                         >
                           <ResilientImage
                             src={img.url}
@@ -171,28 +171,32 @@ export const FeaturedShowcase: React.FC<FeaturedShowcaseProps> = ({
               )}
 
               {/* Footer Specs & CTA */}
-              <div className="mt-auto pt-4 border-t border-[#E7DCC7]/40 flex flex-wrap items-center justify-between gap-4">
-                <div className="flex items-center gap-4 text-xs font-mono text-[#777B75]">
-                  <span className="flex items-center gap-1.5">
-                    <Bed className="w-4 h-4 text-[#B69A70]" />
-                    <span>{marquee.specs.bedrooms} Bedrooms</span>
-                  </span>
-                  <span>·</span>
-                  <span className="flex items-center gap-1.5">
-                    <Bath className="w-4 h-4 text-[#B69A70]" />
-                    <span>{marquee.specs.bathrooms} Bathrooms</span>
-                  </span>
-                  <span>·</span>
-                  <span className="flex items-center gap-1.5">
-                    <Maximize2 className="w-4 h-4 text-[#B69A70]" />
-                    <span>{marquee.specs.plotSizeSqFt?.toLocaleString()} sq.ft Lot</span>
-                  </span>
+              <div className="mt-auto pt-4 border-t border-[#E7DCC7]/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 sm:gap-4">
+                {/* Specifications Responsive Grid */}
+                <div className="grid grid-cols-2 xs:grid-cols-3 gap-2.5 sm:gap-4 text-xs font-mono text-[#777B75] w-full sm:w-auto min-w-0">
+                  <div className="flex items-center gap-1.5 min-w-0" title={`${marquee.specs.bedrooms} Bedrooms`}>
+                    <Bed className="w-4 h-4 text-[#B69A70] shrink-0" />
+                    <span className="truncate">{marquee.specs.bedrooms} Bedrooms</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 min-w-0" title={`${marquee.specs.bathrooms} Bathrooms`}>
+                    <Bath className="w-4 h-4 text-[#B69A70] shrink-0" />
+                    <span className="truncate">{marquee.specs.bathrooms} Bathrooms</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 min-w-0 col-span-2 xs:col-span-1" title={`${marquee.specs.plotSizeSqFt?.toLocaleString() || marquee.specs.builtUpAreaSqFt?.toLocaleString()} sq.ft Lot`}>
+                    <Maximize2 className="w-4 h-4 text-[#B69A70] shrink-0" />
+                    <span className="truncate">
+                      {(marquee.specs.plotSizeSqFt || marquee.specs.builtUpAreaSqFt)?.toLocaleString()} sq.ft Lot
+                    </span>
+                  </div>
                 </div>
 
-                <span className="text-xs uppercase font-bold tracking-widest text-[#172720] group-hover:text-[#B69A70] transition-colors inline-flex items-center gap-1.5">
-                  <span>Explore Residence</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </span>
+                {/* Explore CTA Button - fits comfortably on mobile and remains easy to tap */}
+                <div className="w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-[#E7DCC7]/20 flex sm:block">
+                  <span className="w-full sm:w-auto py-2.5 px-4 sm:p-0 rounded sm:rounded-none bg-[#172720] sm:bg-transparent text-[#E7DCC7] sm:text-[#172720] group-hover:text-[#B69A70] text-xs uppercase font-bold tracking-widest transition-colors inline-flex items-center justify-center sm:justify-start gap-1.5 shrink-0 shadow-sm sm:shadow-none">
+                    <span>Explore Residence</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </div>
               </div>
             </div>
           </div>

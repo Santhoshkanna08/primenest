@@ -90,58 +90,60 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
       </div>
 
       {/* Card Body */}
-      <div className="p-5 flex flex-col justify-between flex-grow">
+      <div className="p-4 sm:p-5 flex flex-col justify-between flex-grow min-w-0 max-w-full">
         <div>
           {/* Location */}
-          <div className="flex items-center gap-1.5 text-xs text-[#777B75] mb-2">
+          <div className="flex items-center gap-1.5 text-xs text-[#777B75] mb-2 min-w-0">
             <MapPin className="w-3.5 h-3.5 text-[#B69A70] shrink-0" />
             <span className="truncate">{property.location.neighborhood}, {property.location.city}</span>
           </div>
 
           {/* Title */}
-          <h3 className="text-lg font-serif font-semibold text-[#172720] group-hover:text-[#B69A70] transition-colors leading-snug mb-2 line-clamp-1">
+          <h3 className="text-base sm:text-lg font-serif font-semibold text-[#172720] group-hover:text-[#B69A70] transition-colors leading-snug mb-2 line-clamp-1 break-words">
             {property.title}
           </h3>
 
           {/* Subtitle / summary */}
-          <p className="text-xs text-[#777B75] leading-relaxed line-clamp-2 mb-4">
+          <p className="text-xs text-[#777B75] leading-relaxed line-clamp-2 mb-4 break-words">
             {property.subtitle}
           </p>
         </div>
 
         {/* Specifications Strip & View CTA */}
-        <div className="pt-3 border-t border-[#E7DCC7]/40 flex flex-wrap items-center justify-between gap-2 text-xs text-[#202B25]">
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3 font-mono text-[10px] sm:text-[11px] text-[#777B75]">
+        <div className="pt-3 border-t border-[#E7DCC7]/40 flex flex-col xs:flex-row xs:items-center justify-between gap-2.5 text-xs text-[#202B25] min-w-0">
+          <div className="grid grid-cols-2 xs:flex xs:flex-wrap items-center gap-2 sm:gap-3 font-mono text-[10px] sm:text-[11px] text-[#777B75] min-w-0">
             {property.specs.bedrooms && (
-              <span className="flex items-center gap-1" title="Bedrooms">
-                <Bed className="w-3.5 h-3.5 text-[#B69A70]" />
-                <span>{property.specs.bedrooms} Beds</span>
+              <span className="flex items-center gap-1 min-w-0" title={`${property.specs.bedrooms} Beds`}>
+                <Bed className="w-3.5 h-3.5 text-[#B69A70] shrink-0" />
+                <span className="truncate">{property.specs.bedrooms} Beds</span>
               </span>
             )}
             {property.specs.bathrooms && (
-              <span className="flex items-center gap-1" title="Bathrooms">
-                <Bath className="w-3.5 h-3.5 text-[#B69A70]" />
-                <span>{property.specs.bathrooms} Baths</span>
+              <span className="flex items-center gap-1 min-w-0" title={`${property.specs.bathrooms} Baths`}>
+                <Bath className="w-3.5 h-3.5 text-[#B69A70] shrink-0" />
+                <span className="truncate">{property.specs.bathrooms} Baths</span>
               </span>
             )}
             {property.specs.plotSizeSqFt && (
-              <span className="flex items-center gap-1" title="Plot Size">
-                <Maximize2 className="w-3.5 h-3.5 text-[#B69A70]" />
-                <span>{property.specs.plotSizeSqFt.toLocaleString()} sq.ft</span>
+              <span className="flex items-center gap-1 min-w-0 col-span-2 xs:col-span-1" title={`${property.specs.plotSizeSqFt.toLocaleString()} sq.ft`}>
+                <Maximize2 className="w-3.5 h-3.5 text-[#B69A70] shrink-0" />
+                <span className="truncate">{property.specs.plotSizeSqFt.toLocaleString()} sq.ft</span>
               </span>
             )}
             {property.specs.builtUpAreaSqFt && !property.specs.plotSizeSqFt && (
-              <span className="flex items-center gap-1" title="Built Area">
-                <Maximize2 className="w-3.5 h-3.5 text-[#B69A70]" />
-                <span>{property.specs.builtUpAreaSqFt.toLocaleString()} sq.ft</span>
+              <span className="flex items-center gap-1 min-w-0 col-span-2 xs:col-span-1" title={`${property.specs.builtUpAreaSqFt.toLocaleString()} sq.ft`}>
+                <Maximize2 className="w-3.5 h-3.5 text-[#B69A70] shrink-0" />
+                <span className="truncate">{property.specs.builtUpAreaSqFt.toLocaleString()} sq.ft</span>
               </span>
             )}
           </div>
 
-          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#172720] group-hover:text-[#B69A70] uppercase tracking-wider transition-colors shrink-0">
-            <span>Details</span>
-            <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-          </span>
+          <div className="flex justify-end pt-1 xs:pt-0 border-t xs:border-t-0 border-[#E7DCC7]/20">
+            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#172720] group-hover:text-[#B69A70] uppercase tracking-wider transition-colors shrink-0">
+              <span>Details</span>
+              <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </span>
+          </div>
         </div>
       </div>
     </article>

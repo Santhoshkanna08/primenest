@@ -49,6 +49,8 @@ export const AmbientMusicPlayer: React.FC<AmbientMusicPlayerProps> = ({
         className={`relative w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B69A70] ${
           isPlaying
             ? 'bg-[#172720] border border-[#B69A70] text-[#B69A70] shadow-md shadow-black/25'
+            : state.autoplayBlocked
+            ? 'bg-[#172720]/90 border border-[#B69A70]/70 text-[#B69A70] hover:bg-[#172720]'
             : 'bg-[#202B25]/80 hover:bg-[#172720] border border-[#E7DCC7]/25 hover:border-[#B69A70]/60 text-[#E7DCC7]/75 hover:text-white'
         } ${className}`}
       >

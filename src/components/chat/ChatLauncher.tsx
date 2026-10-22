@@ -38,13 +38,17 @@ export const ChatLauncher: React.FC<ChatLauncherProps> = ({
   };
 
   return (
-    <div className="fixed bottom-6 right-3 sm:right-6 z-40 flex items-center gap-2 sm:gap-3 max-w-[calc(100vw-1.5rem)]">
+    <div
+      className={`fixed bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] sm:bottom-6 right-3 sm:right-6 z-40 items-center gap-2 sm:gap-3 max-w-[calc(100vw-1.5rem)] ${
+        isOpen ? 'hidden sm:flex' : 'flex'
+      }`}
+    >
       {/* Optional Welcome Pill Indicator */}
       {showWelcomePill && !isOpen && (
         <div
           role="status"
           onClick={handleLauncherClick}
-          className="cursor-pointer bg-[#172720] text-[#E7DCC7] text-xs py-1.5 sm:py-2 px-3 sm:px-3.5 rounded-full border border-[#B69A70]/50 shadow-xl flex items-center gap-1.5 sm:gap-2 animate-in fade-in slide-in-from-right-4 duration-300 hover:border-[#B69A70] max-w-[220px] xs:max-w-none"
+          className="cursor-pointer bg-[#172720] text-[#E7DCC7] text-xs py-1.5 sm:py-2 px-3 sm:px-3.5 rounded-full border border-[#B69A70]/50 shadow-xl flex items-center gap-1.5 sm:gap-2 animate-in fade-in slide-in-from-right-4 duration-300 hover:border-[#B69A70] max-w-[190px] xs:max-w-none"
         >
           <Sparkles className="w-3.5 h-3.5 text-[#B69A70] shrink-0" />
           <span className="font-sans font-medium hidden xs:inline whitespace-nowrap">Looking for your perfect property?</span>
