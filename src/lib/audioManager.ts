@@ -1,8 +1,11 @@
 // Global Singleton Audio Manager for PrimeNest Ambient Music
-// Mobile-first approach: audio is ONLY started inside a real user gesture handler.
+// Uses Web Audio API (AudioContext) as the primary unlock mechanism for mobile.
 class AudioManager {
   private static instance: AudioManager;
   private audio: HTMLAudioElement | null = null;
+  private audioContext: AudioContext | null = null;
+  private sourceNode: MediaElementAudioSourceNode | null = null;
+  private gainNode: GainNode | null = null;
   private isPlaying = false;
   private isMuted = false;
   private volume = 0.28;
@@ -11,9 +14,9 @@ class AudioManager {
   private listeners: Set<() => void> = new Set();
   private hasSetupListeners = false;
   private interactionCleanup: (() => void) | null = null;
+  private audioUnlocked = false;
 
-  private primaryAudioPath = '/assets/audio/primenest-ambient.mp3';
-  private fallbackAudioPath = '/assets/audio/primenest-ambient.mpeg';
+  private audioPath = '/assets/audio/primenest-ambient.mp3';
 
   private constructor() {}
 
@@ -25,198 +28,213 @@ class AudioManager {
   }
 
   /**
-   * Create the audio element and append it to the DOM.
-   * On mobile, a DOM-attached <audio> element is more reliable than `new Audio()`.
-   * This can be called outside a gesture — we just can't play() outside one.
-   */
-  private createAudioElement(): HTMLAudioElement {
-    // Remove any previously created element
-    if (this.audio) {
-      this.audio.pause();
-      this.audio.removeAttribute('src');
-      this.audio.load();
-      this.audio.remove();
-      this.audio = null;
-    }
-
-    const audio = document.createElement('audio');
-    audio.id = 'primenest-ambient-audio';
-    audio.setAttribute('playsinline', 'true');
-    audio.setAttribute('webkit-playsinline', 'true');
-    audio.loop = true;
-    audio.preload = 'auto';
-    audio.volume = 0.01;
-    audio.muted = false; // We will NEVER use muted autoplay — go unmuted from the start
-
-    // Use <source> elements for format fallback (browser picks first supported)
-    const sourceMp3 = document.createElement('source');
-    sourceMp3.src = this.primaryAudioPath;
-    sourceMp3.type = 'audio/mpeg';
-    audio.appendChild(sourceMp3);
-
-    const sourceMpeg = document.createElement('source');
-    sourceMpeg.src = this.fallbackAudioPath;
-    sourceMpeg.type = 'audio/mpeg';
-    audio.appendChild(sourceMpeg);
-
-    // Hidden but in the DOM
-    audio.style.display = 'none';
-    document.body.appendChild(audio);
-
-    audio.addEventListener('play', () => {
-      this.isPlaying = true;
-      this.autoplayBlocked = false;
-      this.notify();
-    });
-
-    audio.addEventListener('pause', () => {
-      if (!this.userManuallyPaused) return; // Ignore transient pauses during seek etc.
-      this.isPlaying = false;
-      this.notify();
-    });
-
-    audio.addEventListener('ended', () => {
-      this.isPlaying = false;
-      this.notify();
-    });
-
-    this.audio = audio;
-    return audio;
-  }
-
-  /**
-   * Called on app mount. Does NOT attempt to play audio.
-   * Instead, sets up listeners that will start audio on the first real user gesture.
+   * Called on app mount. Sets up listeners that will start audio on first user gesture.
    *
-   * Mobile browsers (iOS Safari, Android Chrome) require that audio.play()
-   * is called synchronously inside a user-initiated event handler.
-   * No amount of muted-autoplay tricks reliably circumvents this.
+   * We intentionally do NOT create any Audio element or AudioContext here.
+   * Mobile browsers (Android Chrome, iOS Safari) require that both the
+   * AudioContext creation/resume AND audio.play() happen inside a user gesture.
+   * Pre-creating elements outside a gesture "taints" them on many mobile browsers.
    */
   public autoStart() {
     if (this.hasSetupListeners) return;
     this.hasSetupListeners = true;
-
     if (this.userManuallyPaused) return;
     if (typeof window === 'undefined') return;
 
-    // Pre-create the element so it starts loading the audio data.
-    // We just don't call play() until a gesture fires.
-    this.createAudioElement();
-
-    this.setupPlayOnInteraction();
+    this.setupGestureListeners();
   }
 
   /**
-   * On the very first user gesture, create (if needed) and play the audio.
-   * Everything — especially the play() call — happens synchronously inside
-   * the gesture handler, which is what mobile browsers require.
+   * The core mobile unlock: on first gesture, create AudioContext + Audio element
+   * + connect them + resume + play — all synchronously in the same handler.
    */
-  private setupPlayOnInteraction() {
+  private setupGestureListeners() {
     if (this.interactionCleanup) return;
 
     let fired = false;
 
-    const startAudio = () => {
+    const unlockAndPlay = () => {
       if (fired) return;
       fired = true;
       this.cleanupInteractionListeners();
 
       if (this.userManuallyPaused) return;
 
-      // Ensure we have an audio element
-      const audio = this.audio || this.createAudioElement();
-
-      // CRITICAL: set unmuted + low volume SYNCHRONOUSLY before calling play()
-      audio.muted = false;
-      audio.volume = 0.01;
-      this.isMuted = false;
-
-      // play() MUST be called synchronously inside this gesture handler
-      const playPromise = audio.play();
-
-      if (playPromise && typeof playPromise.then === 'function') {
-        playPromise
-          .then(() => {
-            this.isPlaying = true;
-            this.autoplayBlocked = false;
-            this.fadeIn(this.volume, 1500);
-            this.notify();
-          })
-          .catch(() => {
-            // First attempt failed. Try creating a completely fresh audio element
-            // inside this same call stack (still within the user gesture window).
-            this.retryWithFreshElement();
-          });
-      }
+      this.startPlayback();
     };
 
-    // Listen on ALL gesture events. touchend is the most reliable on iOS;
-    // pointerdown is most reliable on Android Chrome; click is desktop fallback.
-    const events = ['touchend', 'touchstart', 'pointerdown', 'click', 'keydown'];
+    // Multiple events for coverage. touchend is most reliable on iOS,
+    // click covers Android + desktop, pointerdown is a secondary fallback.
+    const events = ['touchend', 'click', 'pointerdown', 'keydown'];
+
     events.forEach((evt) => {
-      document.addEventListener(evt, startAudio, {
+      document.addEventListener(evt, unlockAndPlay, {
         passive: true,
-        capture: true,
+        capture: false, // Bubble phase — more natural, avoids capture-phase quirks on mobile
       });
     });
 
     this.interactionCleanup = () => {
       events.forEach((evt) => {
-        document.removeEventListener(evt, startAudio, { capture: true });
+        document.removeEventListener(evt, unlockAndPlay, { capture: false });
       });
     };
   }
 
   /**
-   * If the pre-created element failed to play, destroy it and try a brand-new
-   * element. Some mobile browsers are stricter about reusing audio elements
-   * that were created outside a gesture context.
+   * Creates AudioContext + HTMLAudioElement + connects them + plays.
+   * MUST be called from within a user gesture handler.
    */
-  private retryWithFreshElement() {
-    const audio = this.createAudioElement();
-    audio.muted = false;
-    audio.volume = 0.01;
+  private startPlayback() {
+    try {
+      // Step 1: Create AudioContext (inside gesture — required on mobile)
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (!this.audioContext) {
+        this.audioContext = new AudioCtx();
+      }
 
-    audio
-      .play()
-      .then(() => {
-        this.isPlaying = true;
-        this.autoplayBlocked = false;
-        this.fadeIn(this.volume, 1500);
-        this.notify();
-      })
-      .catch(() => {
-        // Still failed — audio is truly blocked. Show the icon as "off"
-        // so the user knows to tap the music button manually.
-        this.isPlaying = false;
-        this.autoplayBlocked = true;
-        this.notify();
-      });
-  }
+      // Step 2: Resume the AudioContext (it starts 'suspended' on mobile)
+      // This MUST happen inside a user gesture.
+      if (this.audioContext.state === 'suspended') {
+        this.audioContext.resume();
+      }
 
-  private cleanupInteractionListeners() {
-    if (this.interactionCleanup) {
-      this.interactionCleanup();
-      this.interactionCleanup = null;
+      // Step 3: Create the HTML audio element (inside gesture — critical for Android)
+      if (!this.audio) {
+        const audio = new Audio();
+        audio.crossOrigin = 'anonymous';
+        audio.src = this.audioPath;
+        audio.loop = true;
+        audio.preload = 'auto';
+        audio.setAttribute('playsinline', 'true');
+        audio.setAttribute('webkit-playsinline', 'true');
+
+        // Route it through the Web Audio API for reliable mobile output
+        this.sourceNode = this.audioContext.createMediaElementSource(audio);
+        this.gainNode = this.audioContext.createGain();
+        this.gainNode.gain.value = 0.01; // Start quiet for fade-in
+        this.sourceNode.connect(this.gainNode);
+        this.gainNode.connect(this.audioContext.destination);
+
+        // The HTML element's own volume is set to max — we control volume via GainNode
+        audio.volume = 1.0;
+        audio.muted = false;
+
+        audio.addEventListener('ended', () => {
+          // Loop is set, so this shouldn't fire, but just in case
+          this.isPlaying = false;
+          this.notify();
+        });
+
+        this.audio = audio;
+      }
+
+      // Step 4: Play (synchronously inside gesture handler)
+      const playPromise = this.audio.play();
+
+      if (playPromise && typeof playPromise.then === 'function') {
+        playPromise
+          .then(() => {
+            this.audioUnlocked = true;
+            this.isPlaying = true;
+            this.autoplayBlocked = false;
+            this.isMuted = false;
+            this.fadeIn(this.volume, 2000);
+            this.notify();
+          })
+          .catch(() => {
+            // Web Audio API approach failed. Try the plain HTML audio fallback
+            // (disconnected from AudioContext).
+            this.tryPlainHtmlAudio();
+          });
+      }
+    } catch {
+      // AudioContext not supported or other error — fall back to plain HTML audio
+      this.tryPlainHtmlAudio();
     }
   }
 
+  /**
+   * Fallback: if the Web Audio API path fails, try a plain HTML audio element.
+   * This is called from within the same promise chain as the gesture handler.
+   */
+  private tryPlainHtmlAudio() {
+    try {
+      // Clean up the Web Audio API element since it failed
+      if (this.sourceNode) {
+        try { this.sourceNode.disconnect(); } catch { /* ignore */ }
+        this.sourceNode = null;
+      }
+      if (this.gainNode) {
+        try { this.gainNode.disconnect(); } catch { /* ignore */ }
+        this.gainNode = null;
+      }
+
+      // Create a fresh, plain HTML audio element
+      const audio = new Audio(this.audioPath);
+      audio.loop = true;
+      audio.volume = 0.01;
+      audio.muted = false;
+      audio.setAttribute('playsinline', 'true');
+
+      this.audio = audio;
+
+      audio
+        .play()
+        .then(() => {
+          this.audioUnlocked = true;
+          this.isPlaying = true;
+          this.autoplayBlocked = false;
+          this.isMuted = false;
+          this.fadeIn(this.volume, 2000);
+          this.notify();
+        })
+        .catch(() => {
+          // Truly blocked. User will need to tap the music button manually.
+          this.isPlaying = false;
+          this.autoplayBlocked = true;
+          this.notify();
+        });
+    } catch {
+      this.isPlaying = false;
+      this.autoplayBlocked = true;
+      this.notify();
+    }
+  }
+
+  /**
+   * Manual play — called when user taps the music button.
+   * This is always inside a click handler, so gesture requirement is satisfied.
+   */
   public play(): Promise<void> {
     this.cleanupInteractionListeners();
     this.userManuallyPaused = false;
     this.autoplayBlocked = false;
 
-    const audio = this.audio || this.createAudioElement();
+    // If we've never unlocked audio, do the full unlock sequence
+    if (!this.audioUnlocked || !this.audio) {
+      this.startPlayback();
+      return Promise.resolve();
+    }
+
+    // Already unlocked — just resume playback
+    if (this.audioContext && this.audioContext.state === 'suspended') {
+      this.audioContext.resume();
+    }
 
     this.isMuted = false;
-    audio.muted = false;
-    audio.volume = 0.01;
+    this.audio.muted = false;
 
-    return audio
+    return this.audio
       .play()
       .then(() => {
         this.isPlaying = true;
         this.autoplayBlocked = false;
+        if (this.gainNode) {
+          this.gainNode.gain.value = 0.01;
+        } else {
+          this.audio!.volume = 0.01;
+        }
         this.fadeIn(this.volume, 800);
         this.notify();
       })
@@ -274,20 +292,33 @@ class AudioManager {
     this.listeners.forEach((fn) => fn());
   }
 
+  private cleanupInteractionListeners() {
+    if (this.interactionCleanup) {
+      this.interactionCleanup();
+      this.interactionCleanup = null;
+    }
+  }
+
   private fadeIn(targetVolume: number, durationMs = 1000) {
-    if (!this.audio) return;
-    const startVolume = this.audio.volume || 0.01;
     const startTime = Date.now();
+    const startGain = 0.01;
 
     const step = () => {
-      if (!this.audio || this.userManuallyPaused) return;
+      if (this.userManuallyPaused) return;
       const elapsed = Date.now() - startTime;
       const progress = Math.min(1, elapsed / durationMs);
-      this.audio.volume = startVolume + progress * (targetVolume - startVolume);
+      const currentVolume = startGain + progress * (targetVolume - startGain);
+
+      if (this.gainNode) {
+        // Web Audio API path — control via GainNode
+        this.gainNode.gain.value = currentVolume;
+      } else if (this.audio) {
+        // Plain HTML audio path
+        this.audio.volume = currentVolume;
+      }
+
       if (progress < 1) {
         requestAnimationFrame(step);
-      } else {
-        this.audio.volume = targetVolume;
       }
     };
 
