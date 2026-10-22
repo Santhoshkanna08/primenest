@@ -4,24 +4,18 @@ class AudioManager {
   private audio: HTMLAudioElement | null = null;
   private isPlaying = false;
   private isMuted = false;
-  private volume = 0.28; // Elegant, comfortable ambient luxury level
+  private volume = 0.28;
   private userManuallyPaused = false;
   private autoplayBlocked = false;
   private listeners: Set<() => void> = new Set();
   private hasInitialized = false;
   private hasAttemptedAutoStart = false;
+  private interactionCleanup: (() => void) | null = null;
 
   private primaryAudioPath = '/assets/audio/primenest-ambient.mp3';
   private fallbackAudioPath = '/assets/aistudio/WhatsApp_Audio_2026-10-20_at_1.28.19_PM_24e2d863.mpeg';
 
-  private constructor() {
-    if (typeof window !== 'undefined') {
-      const savedPref = localStorage.getItem('primenest_music_pref');
-      if (savedPref === 'off') {
-        this.userManuallyPaused = true;
-      }
-    }
-  }
+  private constructor() {}
 
   public static getInstance(): AudioManager {
     if (!AudioManager.instance) {
@@ -61,7 +55,7 @@ class AudioManager {
         console.warn('PrimeNest: Primary audio format fallback, attempting secondary source...');
         this.audio.src = this.fallbackAudioPath;
         this.audio.load();
-        if (this.isPlaying || (!this.userManuallyPaused && !this.autoplayBlocked)) {
+        if (this.isPlaying || !this.userManuallyPaused) {
           this.audio.play().catch(() => {});
         }
       } else {
@@ -74,33 +68,25 @@ class AudioManager {
   }
 
   /**
-   * Attempts to start ambient audio playback on site entry.
-   * Respects explicit visitor preference stored in localStorage.
-   * If browser autoplay restrictions reject immediate unmuted playback,
-   * sets autoplayBlocked = true so the UI can display the subtle invitation.
+   * Always attempts to start music on site entry.
+   * - On desktop: plays immediately (browsers allow this).
+   * - On mobile: browsers block autoplay; we silently wait for the
+   *   first user interaction (tap / scroll / keydown) and then play.
+   * Only skips if the user explicitly muted via the toggle button THIS session.
    */
   public autoStart() {
     if (this.hasAttemptedAutoStart && this.isPlaying) return;
     this.hasAttemptedAutoStart = true;
 
-    // Check user preference
-    if (typeof window !== 'undefined') {
-      const savedPref = localStorage.getItem('primenest_music_pref');
-      if (savedPref === 'off') {
-        this.userManuallyPaused = true;
-        this.isPlaying = false;
-        this.autoplayBlocked = false;
-        this.notify();
-        return;
-      }
-    }
+    // Only respect an explicit in-session mute — never block based on localStorage
+    if (this.userManuallyPaused) return;
 
     this.init();
     if (!this.audio) return;
 
     this.isMuted = false;
     this.audio.muted = false;
-    this.audio.volume = Math.min(this.volume, 0.12);
+    this.audio.volume = 0.01; // start near-silent; fadeIn will ramp up
 
     const playPromise = this.audio.play();
     if (playPromise !== undefined) {
@@ -109,54 +95,80 @@ class AudioManager {
           this.isPlaying = true;
           this.autoplayBlocked = false;
           this.userManuallyPaused = false;
-          if (typeof window !== 'undefined') {
-            localStorage.setItem('primenest_music_pref', 'on');
-          }
-          this.fadeIn(this.volume, 1200);
+          this.fadeIn(this.volume, 1500);
           this.notify();
+          // Clean up any pending interaction listeners
+          this.cleanupInteractionListeners();
         })
         .catch(() => {
-          // Browser autoplay restriction active
+          // Browser blocked autoplay (common on mobile) — wait for first interaction
           this.isPlaying = false;
           this.autoplayBlocked = true;
           this.notify();
-
-          // Also set up a gentle one-time interaction listener as a safety net
-          const triggerOnInteraction = () => {
-            if (!this.isPlaying && !this.userManuallyPaused) {
-              const pref = typeof window !== 'undefined' ? localStorage.getItem('primenest_music_pref') : null;
-              if (pref !== 'off') {
-                this.play();
-              }
-            }
-            cleanup();
-          };
-
-          const cleanup = () => {
-            const events = ['pointerdown', 'touchstart', 'click', 'keydown'];
-            events.forEach((evt) => {
-              window.removeEventListener(evt, triggerOnInteraction);
-              document.removeEventListener(evt, triggerOnInteraction);
-            });
-          };
-
-          const events = ['pointerdown', 'touchstart', 'click', 'keydown'];
-          events.forEach((evt) => {
-            window.addEventListener(evt, triggerOnInteraction, { passive: true, once: true });
-            document.addEventListener(evt, triggerOnInteraction, { passive: true, once: true });
-          });
+          this.setupInteractionListeners();
         });
     }
   }
 
+  /** Attach one-shot interaction listeners that trigger music on first user gesture */
+  private setupInteractionListeners() {
+    if (this.interactionCleanup) return; // already set up
+
+    const triggerOnInteraction = () => {
+      this.cleanupInteractionListeners();
+      if (!this.isPlaying && !this.userManuallyPaused) {
+        this.playInternal();
+      }
+    };
+
+    const events = ['pointerdown', 'touchstart', 'touchend', 'click', 'scroll', 'keydown'];
+    events.forEach((evt) => {
+      document.addEventListener(evt, triggerOnInteraction, { passive: true, once: true });
+    });
+
+    this.interactionCleanup = () => {
+      events.forEach((evt) => {
+        document.removeEventListener(evt, triggerOnInteraction);
+      });
+    };
+  }
+
+  private cleanupInteractionListeners() {
+    if (this.interactionCleanup) {
+      this.interactionCleanup();
+      this.interactionCleanup = null;
+    }
+  }
+
+  /** Internal play that doesn't write localStorage (used for auto-trigger) */
+  private playInternal(): Promise<void> {
+    this.init();
+    if (!this.audio) return Promise.resolve();
+
+    this.isMuted = false;
+    this.audio.muted = false;
+    this.audio.volume = 0.01;
+
+    return this.audio
+      .play()
+      .then(() => {
+        this.isPlaying = true;
+        this.autoplayBlocked = false;
+        this.fadeIn(this.volume, 1200);
+        this.notify();
+      })
+      .catch(() => {
+        // Still blocked — give up silently
+        this.isPlaying = false;
+        this.notify();
+      });
+  }
+
   public play(): Promise<void> {
+    this.cleanupInteractionListeners();
     this.init();
     this.userManuallyPaused = false;
     this.autoplayBlocked = false;
-
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('primenest_music_pref', 'on');
-    }
 
     if (!this.audio) return Promise.resolve();
 
@@ -183,9 +195,7 @@ class AudioManager {
   public pause() {
     this.userManuallyPaused = true;
     this.autoplayBlocked = false;
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('primenest_music_pref', 'off');
-    }
+    this.cleanupInteractionListeners();
     if (this.audio) {
       this.audio.pause();
       this.isPlaying = false;
@@ -229,7 +239,7 @@ class AudioManager {
 
   private fadeIn(targetVolume: number, durationMs = 1000) {
     if (!this.audio) return;
-    const startVolume = 0.05;
+    const startVolume = 0.01;
     this.audio.volume = startVolume;
     const startTime = Date.now();
 
