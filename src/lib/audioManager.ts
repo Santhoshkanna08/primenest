@@ -31,7 +31,8 @@ class AudioManager {
     this.audio.setAttribute('playsinline', 'true');
     this.audio.setAttribute('webkit-playsinline', 'true');
     this.audio.loop = true;
-    this.audio.volume = this.volume;
+    this.audio.volume = 0;
+    this.audio.muted = true; // Start muted — browsers allow muted autoplay everywhere
     this.audio.preload = 'auto';
 
     this.audio.addEventListener('play', () => {
@@ -52,12 +53,10 @@ class AudioManager {
 
     this.audio.addEventListener('error', () => {
       if (this.audio && !this.audio.src.includes(this.fallbackAudioPath)) {
-        console.warn('PrimeNest: Primary audio format fallback, attempting secondary source...');
+        console.warn('PrimeNest: Primary audio fallback triggered.');
         this.audio.src = this.fallbackAudioPath;
         this.audio.load();
-        if (this.isPlaying || !this.userManuallyPaused) {
-          this.audio.play().catch(() => {});
-        }
+        this.audio.play().catch(() => {});
       } else {
         this.isPlaying = false;
         this.notify();
@@ -68,67 +67,117 @@ class AudioManager {
   }
 
   /**
-   * Always attempts to start music on site entry.
-   * - On desktop: plays immediately (browsers allow this).
-   * - On mobile: browsers block autoplay; we silently wait for the
-   *   first user interaction (tap / scroll / keydown) and then play.
-   * Only skips if the user explicitly muted via the toggle button THIS session.
+   * Strategy:
+   * 1. Play muted immediately — ALL browsers (including mobile) allow muted autoplay.
+   * 2. As soon as any user gesture (touch / click / scroll / key) is detected,
+   *    unmute and fade the volume in. The user never has to press anything manually.
+   * 3. Only skip entirely if the user explicitly pressed the mute toggle this session.
    */
   public autoStart() {
-    if (this.hasAttemptedAutoStart && this.isPlaying) return;
+    if (this.hasAttemptedAutoStart) return;
     this.hasAttemptedAutoStart = true;
 
-    // Only respect an explicit in-session mute — never block based on localStorage
+    // Respect explicit in-session mute only
     if (this.userManuallyPaused) return;
 
     this.init();
     if (!this.audio) return;
 
-    this.isMuted = false;
-    this.audio.muted = false;
-    this.audio.volume = 0.01; // start near-silent; fadeIn will ramp up
+    // Play muted — this works on every browser including iOS / Android
+    this.audio.muted = true;
+    this.audio.volume = 0;
 
-    const playPromise = this.audio.play();
-    if (playPromise !== undefined) {
-      playPromise
-        .then(() => {
-          this.isPlaying = true;
-          this.autoplayBlocked = false;
-          this.userManuallyPaused = false;
-          this.fadeIn(this.volume, 1500);
-          this.notify();
-          // Clean up any pending interaction listeners
-          this.cleanupInteractionListeners();
-        })
-        .catch(() => {
-          // Browser blocked autoplay (common on mobile) — wait for first interaction
-          this.isPlaying = false;
-          this.autoplayBlocked = true;
-          this.notify();
-          this.setupInteractionListeners();
-        });
-    }
+    this.audio
+      .play()
+      .then(() => {
+        this.isPlaying = true;
+        this.autoplayBlocked = false;
+        this.notify();
+
+        // Now wait for the first user gesture to unmute
+        this.setupUnmuteOnInteraction();
+      })
+      .catch(() => {
+        // Extremely rare — even muted autoplay failed. Wait for interaction to start.
+        this.isPlaying = false;
+        this.autoplayBlocked = true;
+        this.notify();
+        this.setupPlayOnInteraction();
+      });
   }
 
-  /** Attach one-shot interaction listeners that trigger music on first user gesture */
-  private setupInteractionListeners() {
-    if (this.interactionCleanup) return; // already set up
+  /**
+   * Audio is already playing muted.
+   * On first user gesture, unmute + fade in volume.
+   */
+  private setupUnmuteOnInteraction() {
+    if (this.interactionCleanup) return;
 
-    const triggerOnInteraction = () => {
+    const unmuteOnGesture = () => {
       this.cleanupInteractionListeners();
-      if (!this.isPlaying && !this.userManuallyPaused) {
-        this.playInternal();
-      }
+      if (this.userManuallyPaused) return;
+      if (!this.audio) return;
+
+      // Unmute directly in the event handler (synchronous — required for iOS)
+      this.audio.muted = false;
+      this.isMuted = false;
+      this.audio.volume = 0.01;
+      this.fadeIn(this.volume, 1500);
+      this.notify();
     };
 
-    const events = ['pointerdown', 'touchstart', 'touchend', 'click', 'scroll', 'keydown'];
+    // Use capture phase to catch events before they reach any element
+    const events = ['touchstart', 'pointerdown', 'click', 'keydown', 'scroll'];
     events.forEach((evt) => {
-      document.addEventListener(evt, triggerOnInteraction, { passive: true, once: true });
+      document.addEventListener(evt, unmuteOnGesture, {
+        passive: true,
+        once: true,
+        capture: true,
+      });
     });
 
     this.interactionCleanup = () => {
       events.forEach((evt) => {
-        document.removeEventListener(evt, triggerOnInteraction);
+        document.removeEventListener(evt, unmuteOnGesture, { capture: true });
+      });
+    };
+  }
+
+  /**
+   * Fallback: muted autoplay also failed. On first gesture, start playing + unmute.
+   */
+  private setupPlayOnInteraction() {
+    if (this.interactionCleanup) return;
+
+    const playOnGesture = () => {
+      this.cleanupInteractionListeners();
+      if (this.userManuallyPaused || !this.audio) return;
+
+      this.audio.muted = false;
+      this.audio.volume = 0.01;
+      this.audio
+        .play()
+        .then(() => {
+          this.isPlaying = true;
+          this.autoplayBlocked = false;
+          this.fadeIn(this.volume, 1200);
+          this.notify();
+        })
+        .catch(() => {});
+    };
+
+    const events = ['touchstart', 'pointerdown', 'click', 'keydown'];
+    events.forEach((evt) => {
+      document.addEventListener(evt, playOnGesture, {
+        passive: true,
+        once: true,
+        capture: true,
+      });
+    });
+
+    this.interactionCleanup = () => {
+      events.forEach((evt) => {
+        document.removeEventListener(evt, playOnGesture, { capture: true });
       });
     };
   }
@@ -138,30 +187,6 @@ class AudioManager {
       this.interactionCleanup();
       this.interactionCleanup = null;
     }
-  }
-
-  /** Internal play that doesn't write localStorage (used for auto-trigger) */
-  private playInternal(): Promise<void> {
-    this.init();
-    if (!this.audio) return Promise.resolve();
-
-    this.isMuted = false;
-    this.audio.muted = false;
-    this.audio.volume = 0.01;
-
-    return this.audio
-      .play()
-      .then(() => {
-        this.isPlaying = true;
-        this.autoplayBlocked = false;
-        this.fadeIn(this.volume, 1200);
-        this.notify();
-      })
-      .catch(() => {
-        // Still blocked — give up silently
-        this.isPlaying = false;
-        this.notify();
-      });
   }
 
   public play(): Promise<void> {
@@ -174,7 +199,7 @@ class AudioManager {
 
     this.isMuted = false;
     this.audio.muted = false;
-    this.audio.volume = this.volume > 0 ? this.volume : 0.28;
+    this.audio.volume = 0.01;
 
     return this.audio
       .play()
@@ -199,12 +224,13 @@ class AudioManager {
     if (this.audio) {
       this.audio.pause();
       this.isPlaying = false;
+      this.isMuted = false;
       this.notify();
     }
   }
 
   public togglePlay() {
-    if (this.isPlaying) {
+    if (this.isPlaying && !this.isMuted) {
       this.pause();
     } else {
       this.play();
@@ -239,12 +265,11 @@ class AudioManager {
 
   private fadeIn(targetVolume: number, durationMs = 1000) {
     if (!this.audio) return;
-    const startVolume = 0.01;
-    this.audio.volume = startVolume;
+    const startVolume = this.audio.volume || 0.01;
     const startTime = Date.now();
 
     const step = () => {
-      if (!this.audio || !this.isPlaying || this.isMuted) return;
+      if (!this.audio || this.userManuallyPaused) return;
       const elapsed = Date.now() - startTime;
       const progress = Math.min(1, elapsed / durationMs);
       this.audio.volume = startVolume + progress * (targetVolume - startVolume);
