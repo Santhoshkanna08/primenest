@@ -156,7 +156,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="space-y-4 pt-8 border-t border-[#E7DCC7]/10 mt-6">
             <div className="flex items-center justify-between pb-2">
               <span className="text-xs uppercase tracking-wider font-mono text-[#B69A70]">Ambient Music</span>
-              <AmbientMusicPlayer showInvitationBanner={false} />
+              <AmbientMusicPlayer />
             </div>
             <button
               onClick={() => {
